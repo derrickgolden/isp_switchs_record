@@ -114,11 +114,6 @@ export default function LandingPageHeader() {
                                     <MdDashboard />
                                     <span className="nav_name ">Dashboard</span>
                                 </Link>
-                                <Link onClick={handleLinkClick} to='/user/session'id='session'
-                                className={`${activeLink === 'session'? 'text-white font-weight-bold ' :"" }nav_link`}>
-                                    <MdPointOfSale />
-                                    <span className="nav_name ">Session</span>
-                                </Link>
                                 
                                 <div className="accordion" id="accordionExample">
                                     <div className="accordion-item">

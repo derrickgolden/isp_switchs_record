@@ -5,8 +5,6 @@ import InventoryProductGroup from "./InventoryProductGroup";
 import InventoryProductList from "./InventoryProductList";
 import SalesReport from "./SalesReport";
 import UserDashboard from "./UserDashboard";
-import SalesEntry from "./SalesEntry";
-import Session from "./Session";
 
 export {
     LandingPage,
@@ -16,6 +14,4 @@ export {
     InventoryProductList,
     SalesReport,
     UserDashboard,
-    SalesEntry,
-    Session,
 }

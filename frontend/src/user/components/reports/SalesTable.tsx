@@ -4,7 +4,6 @@ import { ShopState } from '../../../redux/activeShop';
 import { getStatusColor } from './styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import UpdateInvoice from './UpdateInvoice';
 import { columnsProps, subColumnsProps } from './types';
 import { SalesApiData } from '../../../redux/salesReport';
 
@@ -137,12 +136,6 @@ const SalesTable: React.FC<SalesDataProps> = ({ salesData, activeShop }) => {
                 </div>
             </div>
         </div>
-        {
-           saleRowData &&  
-            <UpdateInvoice 
-                sale = {saleRowData}
-            />
-        }
     </div>   
   );
 };
