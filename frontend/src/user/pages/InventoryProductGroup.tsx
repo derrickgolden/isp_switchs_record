@@ -4,26 +4,33 @@ import PagesHeader from "../components/sharedComponents/PagesHeader";
 import GroupList from "../components/inventory/productGroup/GroupList";
 import GroupProductDetails from "../components/inventory/productGroup/GroupProductDetails";
 import AddGroupForm from "../components/inventory/productGroup/AddGroupForm";
-import { Group } from "../../redux/groupList";
+import { BoxDetailsProps, SwitchProps } from "../../redux/groupList";
+import SiteInforForm from "../components/inventory/productGroup/SiteInforForm";
+import AddSwitchForm from "../components/inventory/productGroup/AddSwitchForm";
+import PortDetails from "../components/inventory/productGroup/PortDetails";
 
 const InventoryProductGroup = () =>{
     const [showDetails, setShowDetails] = useState("list");
-    const [productDetails, setProductDetails] = useState<Group>();
+    const [productDetails, setProductDetails] = useState<BoxDetailsProps>();
 
-    const handleActionDetails = (row: Group) =>{
+    const handleActionDetails = (row: BoxDetailsProps) =>{
         setProductDetails(row);
         setShowDetails("details");
+    };
+    const onHandlePortDetails = (row: SwitchProps) =>{
+        setShowDetails("portdetails")
     }
   
     return(
         <div className='body2 bg-white pb-5' style={{paddingTop: "2rem"}}>
             <PagesHeader 
                 setShowDetails ={setShowDetails}
-                btnInfo = {{text: "Add New Group", navigate: "addgroup", details: "group"}}
+                btnInfo = {{text: "Box", navigate: "addgroup", details: "group"}}
             />
             {showDetails === "list" && 
                 <GroupList 
                     onHandleActionDetails = {handleActionDetails}
+                    onHandlePortDetails={onHandlePortDetails}
                 />
             }
             {showDetails === "details" && productDetails &&
@@ -35,6 +42,21 @@ const InventoryProductGroup = () =>{
             }
             {showDetails === "addgroup" && 
                 <AddGroupForm 
+                    setShowDetails ={setShowDetails}
+                />
+            }
+            {showDetails === "addsite" && 
+                <SiteInforForm 
+                    setShowDetails ={setShowDetails}
+                />
+            }
+            {showDetails === "addswitch" && 
+                <AddSwitchForm 
+                    setShowDetails ={setShowDetails}
+                />
+            }
+            {showDetails === "portdetails" && 
+                <PortDetails
                     setShowDetails ={setShowDetails}
                 />
             }

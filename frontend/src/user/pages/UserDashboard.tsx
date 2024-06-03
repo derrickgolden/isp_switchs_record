@@ -10,7 +10,7 @@ import { getStockDetailsApi } from "./apiCalls/getStockDetails";
 import { details } from "./types";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { getProductGroupList } from "../components/inventory/productGroup/apiCalls/getProductGroupList";
+// import { getProductGroupList } from "../components/inventory/productGroup/apiCalls/getProductGroupList";
 import { getSalesReportApi } from "./apiCalls/getSalesReport";
 import { setSalesReportList } from "../../redux/salesReport";
 import { BottomSummaryCardProps } from "../components/userDashboard/types";
@@ -56,21 +56,21 @@ const UserDashboard: React.FC = () =>{
             })
             
             if(shopListDetails.length > 0){
-                const filterNull = false;
-                const productList = getProductGroupList(filterNull, shop_id);
-                productList.then((data) =>{
-                    let totalProduct = 0;
-                    const totalGroup = data.length;
-                    data.map((details) =>{
-                        if(details?.products[0].product_id !== null){
-                            totalProduct += details.products.length;
-                        }
-                    })
+                // const filterNull = false;
+                // const productList = getProductGroupList(filterNull, shop_id);
+                // productList.then((data) =>{
+                //     let totalProduct = 0;
+                //     const totalGroup = data.length;
+                //     data.map((details) =>{
+                //         if(details?.products[0].product_id !== null){
+                //             totalProduct += details.products.length;
+                //         }
+                //     })
                     
-                    setLowerDashboardData((data: BottomSummaryCardProps) => ({...data,
-                        inventory: {title: "Inventory", side_title_link: "/user/inventory/product-group", side_title_link_caption: "Go to Configuration", left_totals: totalProduct, left_totals_caption: "Total no of Products", right_totals: totalGroup, right_totals_caption: "Product Groups", display_date_picker: false}
-                    }))
-                })
+                //     setLowerDashboardData((data: BottomSummaryCardProps) => ({...data,
+                //         inventory: {title: "Inventory", side_title_link: "/user/inventory/product-group", side_title_link_caption: "Go to Configuration", left_totals: totalProduct, left_totals_caption: "Total no of Products", right_totals: totalGroup, right_totals_caption: "Product Groups", display_date_picker: false}
+                //     }))
+                // })
                 
                 const url = "sales/get-sales"
                 const salesReport = getSalesReportApi({url, shop_id});

@@ -13,7 +13,6 @@ import { RootState } from '../../redux/store';
 import { server_baseurl } from '../../baseUrl';
 import { pharmLogo } from '../../assets/images';
 import DashboardHeader from '../components/userDashboard/DashboardHeader';
-import AddPaymentDetails from '../components/userDashboard/AddPaymentDetails';
 
 export default function LandingPageHeader() {
 
@@ -96,7 +95,6 @@ export default function LandingPageHeader() {
                 headerToggle = {headerToggle} 
                 logoutHandle = {logoutHandle}
             />
-            <AddPaymentDetails />
             <div className="manubar">
                 <div className={`l-navbar menubar scroll-bar ${headerToggle ? "show" : ""}`} id="nav-bar">
                     <nav className="nav">

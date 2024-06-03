@@ -1,19 +1,20 @@
-import axios from "axios";
-import { server_baseurl } from "../../../baseUrl";
 import Swal from "sweetalert2";
+import { server_baseurl } from "../../../../../baseUrl";
+import axios from "axios";
 
 interface ResponseData {
     success: boolean;
     details: [];
 }
 
-export const addCustomer = async (data: string): Promise<ResponseData> => {
-    // const data = JSON.stringify({ shop_id, phone, full_name, email, country, address });
-    return await makeApiCall('user/customer/add-customer', 'post', data);
+export const addSiteApi = async (data: string): Promise<ResponseData> =>{
+    return await makeApiCall('user/site/add-site', 'post', data);
 };
-
-export const updateInvoiceDetails = async (data: string): Promise<ResponseData> =>{
-    return await makeApiCall('user/invoice/update', 'post', data);
+export const addBoxApi = async (data: string): Promise<ResponseData> =>{
+    return await makeApiCall('user/site/add-box', 'post', data);
+};
+export const addSwitchApi = async (data: string): Promise<ResponseData> =>{
+    return await makeApiCall('user/site/add-switch', 'post', data);
 };
 
 const makeApiCall = async(url: string, method: string, data: string) =>{

@@ -1,26 +1,26 @@
 import { RowDataPacket } from "mysql2";
-import { updateProductDetailsProps } from "user/types/productDetails";
-import { productgroupDetails } from "user/types/productGroupTypes";
+import { SwitchDetailsProps } from "user/types/productDetails";
+import { BoxDetailsProps, productgroupDetails } from "user/types/productGroupTypes";
 import { universalResponse } from "user/types/universalResponse";
 const { pool } = require("../../../mysqlSetup");
 
 export const addProductGroup = async (productgroupDetails: productgroupDetails ): Promise<universalResponse> => {
 
-    const {group_name, description, shop_id} = productgroupDetails;
+    const {site_location, description, shop_id} = productgroupDetails;
     
     const connection: RowDataPacket = await pool.getConnection();
     try {
 
             var [res] = await connection.query(`
-                INSERT INTO product_group (group_name, description, shop_id)
+                INSERT INTO site_details (site_location, description, shop_id)
                 VALUES (?, ?, ?)
-            `, [group_name, description, shop_id]);
+            `, [site_location, description, shop_id]);
 
         connection.release();
 
         return {
             success: true,
-            msg: `Product Group ${group_name} Registered`,
+            msg: `Site Loacation at ${site_location} Registered`,
             details: []
         };
     } catch (error) {
@@ -35,42 +35,57 @@ export const addProductGroup = async (productgroupDetails: productgroupDetails )
     }
 };
 
-export const updateProductDetails = async (productgroupDetails:  updateProductDetailsProps ): Promise<universalResponse> => {
+export const addBoxDetails = async (productgroupDetails: BoxDetailsProps ): Promise<universalResponse> => {
 
-    const {product_id, warning_limit, product_name} = productgroupDetails;
+    const {site_id, building_name, description, shop_id} = productgroupDetails;
     
     const connection: RowDataPacket = await pool.getConnection();
     try {
 
             var [res] = await connection.query(`
-                UPDATE stock 
-                SET warning_limit = ?
-                WHERE product_id = ?
-            `, [warning_limit, product_id]);
+                INSERT INTO box_details (site_id, building_name, description, shop_id)
+                VALUES (?, ?, ?, ?)
+            `, [site_id, building_name, description, shop_id]);
 
-            var [name_res] = await connection.query(`
-                UPDATE product_list 
-                SET product_name = ?
-                WHERE product_id = ?
-            `, [product_name, product_id]);
-                
         connection.release();
 
-        if (res.affectedRows > 0 || name_res.affectedRows > 0) {
-            return {
-                err: false,
-                success: true,
-                msg: `Product details updated`,
-                details: res
-            };
+        return {
+            success: true,
+            msg: `Box at ${building_name} is Registered`,
+            details: []
+        };
+    } catch (error) {
+        console.error('Error:', error.message);
+        connection.release();
+
+        if (error.sqlMessage) {
+            return { success: false, msg: error.sqlMessage };
         } else {
-              return {
-                err: false,
-                  success: false,
-                  msg: `No rows were updated. Product not found.`,
-                  details: res
-              };
-          }
+            return { success: false, msg: error.message };
+        }
+    }
+};
+
+export const addSwitchDetails = async (productgroupDetails:  SwitchDetailsProps ): Promise<universalResponse> => {
+
+    const {box_id, description, switch_no, total_ports} = productgroupDetails;
+    
+    const connection: RowDataPacket = await pool.getConnection();
+    try {
+
+            var [res] = await connection.query(`
+                INSERT INTO switch_details(box_id, switch_no, total_ports, description)
+                VALUES (?, ?, ?, ?)
+            `, [box_id, switch_no, total_ports, description]);
+       
+        connection.release();
+
+        return {
+            err: false,
+            success: true,
+            msg: `New switch added successfully`,
+            details: res
+        };
 
     } catch (error) {
         console.error('Error:', error.message);
@@ -84,53 +99,19 @@ export const updateProductDetails = async (productgroupDetails:  updateProductDe
     }
 };
 
-export const getProductGroups = async (filterNull: boolean, shop_id: number): Promise<universalResponse> => {
+export const getSiteList = async ( shop_id: number): Promise<universalResponse> => {
     const connection: RowDataPacket = await pool.getConnection();
-    try {
-        // Organize SQL query for better readability
-        const query = `
-        SELECT
-            mg.group_id,
-            mg.group_name,
-            mg.description,
-            JSON_ARRAYAGG(
-                JSON_OBJECT(
-                    'product_id', ml.product_id,
-                    'product_code', ml.product_code,
-                    'product_name', ml.product_name,
-                    'instructions', ml.instructions,
-                    'side_effect', ml.side_effect,
-                    'img_path', ml.img_path,
-                    'pricing_id', p.pricing_id,
-                    'price', p.price,
-                    'package_cost', p.package_cost,
-                    'stock_qty', s.containers,
-                    'package_size', s.units_per_container,
-                    'open_container_units', s.open_container_units
-                )
-            ) AS products
-        FROM
-            product_group mg
-        LEFT JOIN
-            product_list ml ON mg.group_id = ml.group_id
-        LEFT JOIN
-            pricing p ON ml.product_id = p.product_id
-        LEFT JOIN
-            stock s ON ml.product_id = s.product_id
-        WHERE
-            ${filterNull ? "ml.product_id IS NOT NULL AND" : ""}
-            mg.shop_id = ?
-        GROUP BY
-            mg.group_id, mg.group_name, mg.description;
-        `;
-
-        const [res] = await connection.query(query, [shop_id]);
+        try {
+            var [res] = await connection.query(`
+            SELECT * FROM site_details 
+            WHERE shop_id = ?
+        `, [shop_id]);
 
         connection.release();
 
         return {
             success: true,
-            msg: `Product Group list`,
+            msg: `Site list`,
             details: res,
         };
     } catch (error) {
@@ -145,52 +126,62 @@ export const getProductGroups = async (filterNull: boolean, shop_id: number): Pr
     }
 };
 
-export const shiftProductGroup = async (productgroupDetails:  updateProductDetailsProps ): Promise<universalResponse> => {
-
-    const {product_id, group_id} = productgroupDetails;
-    
+export const getBoxDetails = async ( shop_id: number): Promise<universalResponse> => {
     const connection: RowDataPacket = await pool.getConnection();
-    try {
+        try {
             var [res] = await connection.query(`
-                UPDATE product_list 
-                SET group_id = ?
-                WHERE product_id = ?
-            `, [group_id, product_id]);
-                
+            SELECT 
+                bd.shop_id,
+                bd.box_id,
+                bd.site_id,
+                bd.building_name,
+                bd.description AS box_description,
+                sd.site_location,
+                sd.description AS site_description,
+                JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'switch_id', sw.switch_id,
+                        'switch_no', sw.switch_no,
+                        'total_ports', sw.total_ports,
+                        'description', sw.description
+                    )
+                ) AS switches
+            FROM 
+                box_details bd
+            JOIN 
+                site_details sd ON bd.site_id = sd.site_id
+            JOIN 
+                switch_details sw ON bd.box_id = sw.box_id
+            WHERE 
+                bd.shop_id = ? -- Replace ? with the specific shop_id or pass it as a parameter
+            GROUP BY 
+                bd.box_id;
+
+        `, [shop_id]);
+
         connection.release();
 
-        if ( res.affectedRows > 0) {
-            return {
-                err: false,
-                success: true,
-                msg: `Group has been shifted`,
-                details: res
-            };
-        } else {
-              return {
-                err: false,
-                  success: false,
-                  msg: `No rows were updated. Product not found.`,
-                  details: res
-              };
-          }
-
+        return {
+            success: true,
+            msg: `Site list`,
+            details: res,
+        };
     } catch (error) {
-        console.error('Error: ', error);
+        console.error('Error:', error.message);
         connection.release();
 
         if (error.sqlMessage) {
-            return { success: false, msg: error.sqlMessage };
+            return { success: false, msg: "Database Error", err: error.sqlMessage };
         } else {
-            return { success: false, msg: error.message };
+            return { success: false, msg: "Database Error", err: error.message };
         }
     }
-};
-     
+};    
 
 module.exports = {
     addProductGroup,
-    getProductGroups,
-    updateProductDetails ,
-    shiftProductGroup
+    addBoxDetails,
+    getSiteList,
+    getBoxDetails,
+    addSwitchDetails ,
 }

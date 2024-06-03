@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getProductGroupList } from "./apiCalls/getProductGroupList";
 import { useDispatch, useSelector } from "react-redux";
-import { Group, setGroupList } from "../../../../redux/groupList";
+import { BoxDetailsProps, SwitchProps, setGroupList } from "../../../../redux/groupList";
 import { RootState } from "../../../../redux/store";
 import DataTableProductGroup from "../../sharedComponents/DataTableProductGroup";
+import { getBoxDetailsApi } from "./apiCalls/getApiCalls";
 
 interface  GroupListProps{
-    onHandleActionDetails: (row: Group) => void
+    onHandleActionDetails: (row: BoxDetailsProps) => void;
+    onHandlePortDetails: (row: SwitchProps) => void
   }
 
-const GroupList: React.FC<GroupListProps> = ({onHandleActionDetails}) =>{
+const GroupList: React.FC<GroupListProps> = ({onHandleActionDetails, onHandlePortDetails}) =>{
     const [search, setSearch] = useState('group_name');
     const [searchType, setSearchType] = useState('group_name');
     
@@ -20,39 +21,41 @@ const GroupList: React.FC<GroupListProps> = ({onHandleActionDetails}) =>{
 
     const columns = [
         {
-            name: "Group Name",
-            selector: (row: Group) => row.group_name,
+            name: "Box ID",
+            selector: (row: BoxDetailsProps) => row.box_id,
             sortable: true
         },
         {
-            name: "No of Product",
-            selector: (row: Group) => {
-                if(row.products.length === 1 && row.products[0].product_id === null){
-                    return 0;
-                }
-                return row.products.length;
-            },
+            name: "Building Name",
+            selector: (row: BoxDetailsProps) => row.building_name,
             sortable: true
         },
+        {
+            name: "Box Description",
+            selector: (row: BoxDetailsProps) => row.box_description,
+            sortable: true
+        },   
         {
             name: "Action",
-            cell: (row: Group) => <>
+            cell: (row: BoxDetailsProps) => <>
             <button onClick={() => onHandleActionDetails(row)} 
-                disabled= {row.products[0].product_id === null ? true : false}
+                disabled= { false}
                 className={`btn p-0 px-1 btn-primary btn-sm`}  >
                     View in Detail
-                </button></>,
+            </button></>,
         },
     ]
 
     useEffect(() =>{
-        const filterNull = false
         const shop_id = activeShop.shop?.shop_id;
         if(shop_id){
-            const apiRes = getProductGroupList(filterNull, shop_id);
-            apiRes.then(data =>{
-                dispatch(setGroupList(data))
-            })   
+            const data = JSON.stringify({shop_id});
+            getBoxDetailsApi(data).then((res) =>{
+                console.log(res)
+                if(res.success){
+                    dispatch(setGroupList(res.details))
+                }
+            });  
         }
     }, [groupList.length === 0, activeShop]);
 
@@ -70,17 +73,20 @@ const GroupList: React.FC<GroupListProps> = ({onHandleActionDetails}) =>{
                     <div className="col-12">
                         <div className="card" style={{ borderTop: "2px solid #4723d9" }}>
                             <div className="card-header d-flex justify-content-between border-bottom pb-1">
-                                <h4>Product Groups</h4>
+                                <h4>Box List</h4>
                                 {/* <select value={search} onChange={handleSearchChange}>
                                     <option value="product_name">Product Name</option>
-                                    <option value="group_name">Product Group</option>
+                                    <option value="group_name">Product BoxDetailsProps</option>
                                     <option value="product_id">Product Id</option>
                                 </select> */}
                             </div>
                             <div className="card-body">
                                 {activeShop.shop ?  
-                                    <DataTableProductGroup search={ searchType }
-                                        apidata={groupList} columns={columns} 
+                                    <DataTableProductGroup 
+                                        search={ searchType }
+                                        apidata={groupList} 
+                                        columns={columns} 
+                                        onHandlePortDetails ={onHandlePortDetails}
                                     />  :
                                     <h2>Select a shop first.</h2>
                                 }           

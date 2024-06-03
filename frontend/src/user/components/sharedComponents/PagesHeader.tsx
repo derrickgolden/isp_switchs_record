@@ -21,9 +21,7 @@ const PagesHeader: React.FC<PagesHeaderProps> = ({setShowDetails, btnInfo }) =>{
             setTotals(groupList.length)
         }
     }, [ groupList, productList])
-    const handleButtonClick =() =>{
-        setShowDetails(btnInfo.navigate)
-    }
+    
     return(
         <section className="upper-section bg-light py-5 px-2 mb-5">
             <div className="d-flex flex-wrap justify-content-between align-items-center px-md-5">
@@ -31,24 +29,32 @@ const PagesHeader: React.FC<PagesHeaderProps> = ({setShowDetails, btnInfo }) =>{
                     <div className="d-flex align-items-center">
                         <h1 className="font-weight-bold fs-4 lh-1" 
                             style={{fontFamily: 'sans-serif', color: 'rgba(29, 36, 46, 0.5)'}}>
-                                Inventory &nbsp;
+                                Boxes &nbsp;
                         </h1>
                         <FaChevronRight />
                         <h1 className="font-weight-bold fs-4" style={{ fontFamily: 'Poppins', color: '#1D242E' }}>
-                            &nbsp; {btnInfo.details ==="product"? `List of products(${totals})`:
-                                    btnInfo.details === "group"? `List of Groups(${totals})` : null}
+                            &nbsp; {btnInfo.details ==="product"? `List of switches(${totals})`:
+                                    btnInfo.details === "group"? `List of Boxes(${totals})` : null}
                         </h1>
                     </div>
                     <p className="font-family-poppins font-weight-400 font-size-14 line-height-21 text-dark">
-                        {btnInfo.details ==="product"? `List of products available for sales.`:
-                        btnInfo.details === "group"? `List of product groups available for sales.` : null}
+                        {btnInfo.details ==="product"? `List of switches.`:
+                        btnInfo.details === "group"? `List of boxes installed.` : null}
                     </p>
                 </div>
-                <div className="bg-white d-flex align-items-center" 
+                <div className=" d-flex gap-4 align-items-center" 
                 style={{ width: "fit-content", height: "46px" }}>
-                    <button onClick={() => handleButtonClick()}
-                    type="button" className="btn btn-danger text-white">
-                        <IoAddOutline /> {btnInfo.text}
+                    <button onClick={() => setShowDetails("addsite")}
+                    type="button" className="d-flex align-items-center btn btn-outline-danger">
+                        <IoAddOutline size={20} /> Site
+                    </button>
+                    <button onClick={() => setShowDetails(btnInfo.navigate)}
+                    type="button" className="d-flex align-items-center btn btn-outline-danger ">
+                        <IoAddOutline size={20} /> {btnInfo.text}
+                    </button>
+                    <button onClick={() => setShowDetails("addswitch")}
+                    type="button" className="d-flex align-items-center btn btn-outline-danger ">
+                        <IoAddOutline size={20} /> Switch
                     </button>
                 </div>                  
             </div>

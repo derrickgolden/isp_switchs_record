@@ -29,11 +29,11 @@ export interface productDetailsProps{
     
 }
 
-export interface updateProductDetailsProps{
-    product_id: number, 
-    warning_limit: number, 
-    product_name: string,
-    group_id: number,
+export interface SwitchDetailsProps{
+    switch_no: string;
+    total_ports: string;
+    box_id: string;
+    description: string;
 }
 
 export interface GetProductListProps{

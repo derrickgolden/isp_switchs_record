@@ -9,7 +9,7 @@ import fs from 'fs';
 require('dotenv').config();
 
 import adminauth from './user/routes/auth'
-import productGroup from './user/routes/inventory/productGroup'
+import siteDetails from './user/routes/inventory/productGroup'
 import productList from './user/routes/inventory/productList'
 import sales from './user/routes/sales/registerSales'
 import report from './user/routes/sales/getSalesReport'
@@ -66,7 +66,7 @@ app.get("/", (req, res) => {
 
 app.use("/user", adminauth);
 app.use("/user", upload.single('logo'), authenticateToken, shop);
-app.use("/user/inventory", [productGroup, productList]);
+app.use("/user/site", [siteDetails, productList]);
 app.use("/user/sales", authenticateToken, [sales, report]);
 app.use("/user/stock", stock);
 app.use("/user/pay-method", [paymentMethodSales, paymentDetails]);

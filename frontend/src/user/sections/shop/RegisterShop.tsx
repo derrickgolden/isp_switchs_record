@@ -9,10 +9,10 @@ const inputDetails: {
     placeholder: string;
     name: "shop_name" | "location" | "shop_email" | "shop_tel";
 }[] = [
-    {label: "Shop Name", type: "text", placeholder: "Shop name", name: "shop_name"},
+    {label: "Company Name", type: "text", placeholder: "Company name", name: "shop_name"},
     {label: "Location", type: "text", placeholder: "Westlands Nairobi", name: "location"},
-    {label: "Shop Email", type: "email", placeholder: "shop@gmail.com", name: "shop_email"},
-    {label: "Shop Tel", type: "text", placeholder: "+2547147000000", name: "shop_tel"},
+    {label: "Company Email", type: "email", placeholder: "shop@gmail.com", name: "shop_email"},
+    {label: "Company Tel", type: "text", placeholder: "+2547147000000", name: "shop_tel"},
 ]
 
 const RegisterShop: React.FC = () =>{

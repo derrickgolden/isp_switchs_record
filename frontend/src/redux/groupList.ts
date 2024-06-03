@@ -1,14 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { ProductDetails } from '../user/sections/pointOfEntry/types';
 
-export interface Group {
-  group_id: number;
-  group_name: string;
+export interface SwitchProps {
+  switch_id: number;
+  switch_no: number;
   description: string;
-  products: ProductDetails[];
+  total_ports: number;
 }
 
-const initialState: Group[] = [];
+export interface BoxDetailsProps {
+  shop_id: number;
+  box_id: number;
+  site_id: number;
+  building_name: string;
+  box_description: string;
+  site_location: string;
+  site_description: string;
+  switches: SwitchProps[];
+}
+
+const initialState: BoxDetailsProps[] = [];
 
 const groupListSlice = createSlice({
   name: 'groupList',

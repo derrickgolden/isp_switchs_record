@@ -3,7 +3,7 @@ import BeatLoader from "react-spinners/BeatLoader";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { addProductApi } from "./apiCalls/addProductApi";
-import { getProductGroupList } from "./productGroup/apiCalls/getProductGroupList";
+// import { getProductGroupList } from "./productGroup/apiCalls/getProductGroupList";
 import { setGroupList } from "../../../redux/groupList";
 import PricingDetailsCard from "./PricingDetailsCard";
 import Swal from "sweetalert2";
@@ -31,12 +31,12 @@ const AddProductForm: React.FC<AddProductFormProps> = ({ setShowDetails}) =>{
         const filterNull = false;
         if(activeShop.shop){
             const shop_id = activeShop.shop?.shop_id
-            const apiRes = getProductGroupList(filterNull, shop_id);
-            apiRes.then(data =>{
-                if(data.length){
-                    dispatch(setGroupList(data))
-                }
-            })       
+            // const apiRes = getProductGroupList(filterNull, shop_id);
+            // apiRes.then(data =>{
+            //     if(data.length){
+            //         dispatch(setGroupList(data))
+            //     }
+            // })       
         }
     }, [groupList.length === 0]);
 

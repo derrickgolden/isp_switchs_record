@@ -1,19 +1,18 @@
-import axios from "axios";
-import { server_baseurl } from "../../../baseUrl";
 import Swal from "sweetalert2";
+import { server_baseurl } from "../../../../../baseUrl";
+import axios from "axios";
+import { SiteListProps } from "../types";
 
 interface ResponseData {
     success: boolean;
-    details: [];
+    details: SiteListProps[];
 }
 
-export const addCustomer = async (data: string): Promise<ResponseData> => {
-    // const data = JSON.stringify({ shop_id, phone, full_name, email, country, address });
-    return await makeApiCall('user/customer/add-customer', 'post', data);
+export const getSiteDetailsApi = async (data: string): Promise<ResponseData> =>{
+    return await makeApiCall('user/site/get-site', 'post', data);
 };
-
-export const updateInvoiceDetails = async (data: string): Promise<ResponseData> =>{
-    return await makeApiCall('user/invoice/update', 'post', data);
+export const getBoxDetailsApi = async (data: string): Promise<ResponseData> =>{
+    return await makeApiCall('user/site/box-details', 'post', data);
 };
 
 const makeApiCall = async(url: string, method: string, data: string) =>{
@@ -44,11 +43,6 @@ const makeApiCall = async(url: string, method: string, data: string) =>{
     return await axios.request(config)
     .then((response) => {
         if(response.data.success){
-            Swal.fire({
-                title: "Success",
-                text: `${response.data.msg}`,
-                icon: "success"
-            });
             return {success: true, details: response.data.details};
         }else{
             Swal.fire({

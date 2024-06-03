@@ -13,3 +13,9 @@ export interface ProductGroup {
     productDetails: Group,
     setShowDetails: (showlist: string) => void
 }
+
+export interface SiteListProps{
+    site_id: number;
+    site_location: string;
+    description: string;
+}

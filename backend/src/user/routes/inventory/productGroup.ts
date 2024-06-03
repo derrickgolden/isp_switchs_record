@@ -1,21 +1,22 @@
 import express, {Request, Response} from 'express';
 import { 
+    addBoxDetails,
     addProductGroup, 
-    getProductGroups, 
-    shiftProductGroup, 
-    updateProductDetails 
+    addSwitchDetails, 
+    getBoxDetails, 
+    getSiteList, 
 } from '../../dbServices/inventory/productGroup';
-import { productgroupDetails } from 'user/types/productGroupTypes';
+import { BoxDetailsProps, productgroupDetails } from 'user/types/productGroupTypes';
 import { universalResponse } from 'user/types/universalResponse';
 
 const router = express.Router();
 
-router.post('/add-group', async(req: Request, res: Response) =>{
-    const { group_name, description, shop_id }: productgroupDetails = req.body;
+router.post('/add-site', async(req: Request, res: Response) =>{
+    const { site_location, description, shop_id }: productgroupDetails = req.body;
     const token: string = req.header('Authorization');
 
     try {
-        const response:universalResponse = await addProductGroup({group_name, description, shop_id})
+        const response:universalResponse = await addProductGroup({site_location, description, shop_id})
         response.success ? 
             res.status(200).json(response):
             res.status(302).json(response)
@@ -26,11 +27,27 @@ router.post('/add-group', async(req: Request, res: Response) =>{
     }
 });
 
-router.post('/get-groups', async(req: Request, res: Response) =>{
-    const {filterNull, shop_id} = req.body || false
+router.post('/add-box', async(req: Request, res: Response) =>{
+    const { site_id, description, building_name, shop_id }: BoxDetailsProps = req.body;
+    const token: string = req.header('Authorization');
+
+    try {
+        const response:universalResponse = await addBoxDetails({site_id, building_name, description, shop_id})
+        response.success ? 
+            res.status(200).json(response):
+            res.status(302).json(response)
+        
+    } catch (error) {
+        console.log(error)
+        res.status(302).json({success: false, msg: "sever side error", err: error.message})
+    }
+});
+
+router.post('/get-site', async(req: Request, res: Response) =>{
+    const { shop_id} = req.body;
         
     try {
-        const response:universalResponse = await getProductGroups(filterNull, shop_id);
+        const response:universalResponse = await getSiteList( shop_id);
         response.success ? 
             res.status(200).json(response):
             res.status(302).json(response)
@@ -41,26 +58,26 @@ router.post('/get-groups', async(req: Request, res: Response) =>{
     }
 });
 
-router.post('/update', async(req: Request, res: Response) =>{
+router.post('/box-details', async(req: Request, res: Response) =>{
+    const { shop_id } = req.body;
+        
+    try {
+        const response:universalResponse = await getBoxDetails( shop_id );
+        response.success ? 
+            res.status(200).json(response):
+            res.status(302).json(response)
+        
+    } catch (error) {
+        console.log(error)
+        res.status(302).json({success: false, msg: "sever side error", err: error.message})
+    }
+});
+
+router.post('/add-switch', async(req: Request, res: Response) =>{
     const body = req.body;
     
     try {
-        const response:universalResponse = await updateProductDetails (body)
-        response.success ? 
-            res.status(200).json(response):
-            res.status(302).json(response)
-        
-    } catch (error) {
-        console.log(error)
-        res.status(302).json({success: false, msg: "sever side error", err: error.message})
-    }
-});
-
-router.patch('/shift-group', async(req: Request, res: Response) =>{
-    const body = req.body;
-    
-    try {
-        const response:universalResponse = await shiftProductGroup(body)
+        const response:universalResponse = await addSwitchDetails (body)
         response.success ? 
             res.status(200).json(response):
             res.status(302).json(response)

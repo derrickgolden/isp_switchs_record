@@ -14,7 +14,7 @@ export const registerShop = async ({shopDetails, user, logo}: RegisterShopProps 
 
         await connection.beginTransaction();
             var [res] = await connection.query(`
-                INSERT INTO shop_details (
+                INSERT INTO company_details (
                     user_id, shop_name, location, shop_email, shop_tel, logo_path, extra_info
                 )
                 VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -28,7 +28,7 @@ export const registerShop = async ({shopDetails, user, logo}: RegisterShopProps 
 
         return {
             success: true,
-            msg: `Shop has been Registered`,
+            msg: `Company has been Registered`,
             details: [{shop_id}]
         };
     } catch (error) {
@@ -49,7 +49,7 @@ export const getShopListDetails = async (user_id: number) => {
     try {
 
             var [res] = await connection.query(`
-                SELECT * FROM shop_details 
+                SELECT * FROM company_details 
                 WHERE user_id = ?
             `, [user_id]);
                 
@@ -57,7 +57,7 @@ export const getShopListDetails = async (user_id: number) => {
 
         return {
             success: true,
-            msg: `Shop details`,
+            msg: `Company details`,
             details: res
         };
     } catch (error) {

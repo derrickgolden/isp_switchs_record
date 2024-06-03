@@ -1,4 +1,4 @@
-import { Group } from "../../../redux/groupList";
+import { BoxDetailsProps, SwitchProps } from "../../../redux/groupList";
 import { ProductDetails } from "../../sections";
 import { Product } from "../inventory/types";
 
@@ -22,20 +22,21 @@ export interface DataTableComponentProps{
     })[], search: string | number
   }
 export interface DataTableProductGroupProps{
-    apidata: Group[], 
+    apidata: BoxDetailsProps[],
+    onHandlePortDetails: (row: SwitchProps) => void; 
     columns: ({
         name: string;
-        selector: (row: Group) => number;
+        selector: (row: BoxDetailsProps) => number;
         sortable: boolean;
         cell?: undefined;
     } | {
         name: string;
-        selector: (row: Group) => string ;
+        selector: (row: BoxDetailsProps) => string ;
         sortable: boolean;
         cell?: undefined;
     } | {
         name: string;
-        cell: (row: Group) => JSX.Element;
+        cell: (row: BoxDetailsProps) => JSX.Element;
         selector?: undefined;
         sortable?: undefined;
     })[], 

@@ -3,91 +3,65 @@ import BeatLoader from "react-spinners/BeatLoader";
 import { useNavigate } from "react-router-dom";
 import { getSessionStorage } from "../../../controllers/getSessionStorage";
 import Swal from "sweetalert2";
-import { addBoxApi } from "./apiCalls/postApiCalls";
-import { getSiteDetailsApi } from "./apiCalls/getApiCalls";
-import { SiteListProps } from "./types";
+import { addSiteApi } from "./apiCalls/postApiCalls";
 
 interface AddGroupFormProps{
     setShowDetails: (showDetails: string) => void;
 }
-const AddGroupForm: React.FC<AddGroupFormProps> = ({ setShowDetails}) =>{
-    const navigate = useNavigate();
+const SiteInforForm: React.FC<AddGroupFormProps> = ({ setShowDetails}) =>{
+    const [isLoading, setIsLoading] = useState(false)
 
-    const [isLoading, setIsLoading] = useState(false);
-    const [siteList, setSiteList] = useState<SiteListProps[]>([]);
+    const navigate = useNavigate();
     const [groupDetails, setGroupDetails] = useState({
-        site_id: '0', building_name: "", description: ""
-    });
+        site_location: "", description: ""
+    })
     const [selectRows, setSelectRows] = useState(3);
 
     const userShop = getSessionStorage();
     const { localShop } = userShop;
-    // console.log(localShop);
+
     useEffect(() =>{
         if(localShop?.shop_name){
-            const {shop_id} = localShop;
-            setGroupDetails((obj) =>({...obj, shop_id}));
-
-            const data = JSON.stringify({shop_id});
-            getSiteDetailsApi(data).then((res) =>{
-                if(res.success){
-                    setSiteList(res.details);
-                }
-            })
+            setGroupDetails((obj) =>({...obj, shop_id: localShop.shop_id}))
         }else{
             Swal.fire({
                 title: "Select Shop",
-                text: "Select the company you want to add the box to first.",
+                text: "Select the Company you want to add a site first.",
                 icon: "warning"
             });
         }
     }, []);
 
-    const handleFormInput = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>{
+    const handleFormInput = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>{
         const name = e.target.name;
-        const value = e.target.value;  
+        const value = e.target.value;     
         setGroupDetails((obj) =>({...obj, [name]: value}))
     }
 
     const handleAddGroupSubmit: React.FormEventHandler<HTMLFormElement> = (e) =>{
         e.preventDefault()
-        if(groupDetails.site_id !== '0'){
-            setIsLoading(true);
-            const data = JSON.stringify(groupDetails);
-
-            addBoxApi(data).then((res) =>{
-                if(res.success){
-                    setShowDetails("list");
-                }
-            }).finally(()=>{
-                setIsLoading(false);
-            }) 
-        }else{
-            Swal.fire("Select box location");
-        }
+        setIsLoading(true);
+        const data = JSON.stringify(groupDetails);
+        addSiteApi(data).then((res) =>{
+            if(res.success){
+                setShowDetails("list");
+            }
+        }).finally(()=>{
+            setIsLoading(false);
+        })  
     }
 
     return(
         <div className="px-5">
-            <h3>Add New box for <span className="text-warning">{localShop?.shop_name}</span></h3>
+            <h3>Add New site location for <span className="text-warning">{localShop?.shop_name}</span></h3>
             <form onSubmit={handleAddGroupSubmit}
             className="col-sm-10"> 
                 <div className="d-flex flex-wrap justify-content-between align-items-center ">
-                    <label htmlFor="form-select">Site Location</label>
-                    <select className="form-select mb-3 col-sm-5" aria-label="Default select example"
-                    defaultValue={groupDetails.site_id} onChange={handleFormInput} name="site_id" required>
-                        <option value={0}>Select box location</option>
-                        {siteList.map((site, i) =>(
-                            <option key={i} value={site.site_id} >
-                                {site.site_location}
-                            </option>
-                        ))}   
-                    </select>
                     <div className="form-group mb-3 col-sm-5">
-                        <label htmlFor="exampleFormControlInput1 p-4">Building Name</label>
-                        <input onChange={handleFormInput} value={groupDetails.building_name}
-                        type="text" className="form-control" id="building_name" name="building_name"
-                         placeholder="Redsky" required/>
+                        <label htmlFor="exampleFormControlInput1 p-4">Site Location</label>
+                        <input onChange={handleFormInput} value={groupDetails.site_location}
+                        type="text" className="form-control" id="site_location" name="site_location"
+                         placeholder="Naivas" required/>
                     </div>
                 </div>  
                 
@@ -126,4 +100,4 @@ const AddGroupForm: React.FC<AddGroupFormProps> = ({ setShowDetails}) =>{
     )
 }
 
-export default AddGroupForm;
+export default SiteInforForm;
