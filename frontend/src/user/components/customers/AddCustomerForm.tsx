@@ -6,10 +6,8 @@ import { CountriesData } from "../auth/types";
 import { useDispatch } from "react-redux";
 import { setCallApi } from "../../../redux/callApi";
 import { getSessionStorage } from "../../controllers/getSessionStorage";
-import FooterModal from "../sharedComponents/FooterModal";
 import { addCustomer } from "../apiCalls/postApiCalls";
 import ModalWrapper from "../sharedComponents/ModalWrapper";
-import UpdateInvoice from "../reports/UpdateInvoice";
 
 const countries: CountriesData = countriesList;
 const AddCustomerForm = () => {

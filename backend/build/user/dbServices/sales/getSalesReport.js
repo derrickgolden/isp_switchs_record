@@ -11,6 +11,9 @@ const getSalesReport = async (shop_id) => {
                 s.sale_date,
                 s.total_price,
                 s.total_profit,
+                s.payment_status,
+                s.customer_id,
+                s.balance,
                 'cashier',
                 JSON_OBJECT(
                     'cashier_f_name', ud.first_name,
@@ -24,7 +27,8 @@ const getSalesReport = async (shop_id) => {
                         'product_name', pl.product_name,
                         'units_sold', si.units_sold,
                         'sub_total', si.sub_total,
-                        'profit', si.profit
+                        'profit', si.profit,
+                        'price', si.price
                     )
                 ) AS sales_items
             FROM
@@ -37,7 +41,8 @@ const getSalesReport = async (shop_id) => {
                 product_list pl ON si.product_id = pl.product_id -- Join with product_list table
             WHERE s.shop_id = ?
             GROUP BY
-                s.sale_id, s.sale_date, s.total_price
+                s.sale_id, s.sale_date, s.total_price, s.total_profit,
+                s.payment_status, s.customer_id, s.balance
             ORDER BY sale_id DESC;
 
             `, [shop_id]);

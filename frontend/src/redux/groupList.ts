@@ -1,10 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+export type Status = "unconnected" | "active" | "inactive" | "faulty"
+
+// status: Status;
+export interface PortTypes {
+  status: Status,
+  port_id: number,
+  description: string,
+  port_number: number,
+  client_details: {
+    house_no: string;
+    phone: string;
+    username: string;
+  }
+}
 export interface SwitchProps {
   switch_id: number;
   switch_no: number;
   description: string;
   total_ports: number;
+  ports: PortTypes[];
 }
 
 export interface BoxDetailsProps {

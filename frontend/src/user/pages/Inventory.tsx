@@ -1,5 +1,4 @@
 import { MdInventory } from "react-icons/md"
-import TopSummaryCard from "../components/userDashboard/TopSummaryCard"
 import { MdOutlineEventAvailable } from "react-icons/md";
 import { IoIosWarning } from "react-icons/io"
 
@@ -30,13 +29,6 @@ const Inventory = () =>{
                             <IoAddOutline /> Add New Item
                         </button>
                     </div>
-                </div>
-                <div className="d-flex flex-row gap-5">
-                   {upperDashboardData.map((data, i) =>(
-                    <TopSummaryCard 
-                        key ={i}
-                        data= {data}/>
-                   ))}
                 </div>
             </section>
         <Outlet />

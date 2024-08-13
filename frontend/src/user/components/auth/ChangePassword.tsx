@@ -2,7 +2,7 @@
 import React, { useState, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { changePasswordApi } from '../components/auth/apiCalls/changePassword';
+import { changePasswordApi } from './apiCalls/changePassword';
 import { ThreeDots } from 'react-loader-spinner';
 
 const ChangePassword: React.FC = () => {

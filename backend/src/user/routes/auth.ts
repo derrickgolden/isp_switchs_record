@@ -41,7 +41,6 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> =>{
             email, id, picture}, auth_with )    
     } 
 
-
         response.success ? 
             res.status(200).json(response) : 
             res.status(302).json(response)
@@ -76,12 +75,10 @@ router.post('/login', async (req: Request, res: Response): Promise<void> =>{
 
         const match: boolean = await bcrypt.compare(password, passwordHash);
         if(match) {
+            console.log(token)
             res.status(200).send({success: true, token, msg: "User Found", details}) ;
-            
+
         }else{
-            res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
             res.status(200).send({success: false, msg: "Incorrect Password"});
         }
     } catch (error) {

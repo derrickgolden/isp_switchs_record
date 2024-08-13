@@ -2,16 +2,21 @@ import Swal from "sweetalert2";
 import { server_baseurl } from "../../../../../baseUrl";
 import axios from "axios";
 import { SiteListProps } from "../types";
+import { BoxDetailsProps } from "../../../../../redux/groupList";
 
 interface ResponseData {
     success: boolean;
     details: SiteListProps[];
 }
+interface BoxResponseData {
+    success: boolean;
+    details: BoxDetailsProps[];
+}
 
 export const getSiteDetailsApi = async (data: string): Promise<ResponseData> =>{
     return await makeApiCall('user/site/get-site', 'post', data);
 };
-export const getBoxDetailsApi = async (data: string): Promise<ResponseData> =>{
+export const getBoxDetailsApi = async (data: string): Promise<BoxResponseData> =>{
     return await makeApiCall('user/site/box-details', 'post', data);
 };
 

@@ -7,18 +7,16 @@ import DataTableProductGroup from "../../sharedComponents/DataTableProductGroup"
 import { getBoxDetailsApi } from "./apiCalls/getApiCalls";
 
 interface  GroupListProps{
-    onHandleActionDetails: (row: BoxDetailsProps) => void;
     onHandlePortDetails: (row: SwitchProps) => void
   }
 
-const GroupList: React.FC<GroupListProps> = ({onHandleActionDetails, onHandlePortDetails}) =>{
+const GroupList: React.FC<GroupListProps> = ({ onHandlePortDetails}) =>{
     const [search, setSearch] = useState('group_name');
     const [searchType, setSearchType] = useState('group_name');
     
-    const dispatch = useDispatch();
     const groupList = useSelector((state: RootState) => state.groupList);
     const activeShop = useSelector((state: RootState) => state.activeShop);
-
+    // console.log(groupList)
     const columns = [
         {
             name: "Box ID",
@@ -35,34 +33,12 @@ const GroupList: React.FC<GroupListProps> = ({onHandleActionDetails, onHandlePor
             selector: (row: BoxDetailsProps) => row.box_description,
             sortable: true
         },   
-        {
-            name: "Action",
-            cell: (row: BoxDetailsProps) => <>
-            <button onClick={() => onHandleActionDetails(row)} 
-                disabled= { false}
-                className={`btn p-0 px-1 btn-primary btn-sm`}  >
-                    View in Detail
-            </button></>,
-        },
     ]
-
-    useEffect(() =>{
-        const shop_id = activeShop.shop?.shop_id;
-        if(shop_id){
-            const data = JSON.stringify({shop_id});
-            getBoxDetailsApi(data).then((res) =>{
-                console.log(res)
-                if(res.success){
-                    dispatch(setGroupList(res.details))
-                }
-            });  
-        }
-    }, [groupList.length === 0, activeShop]);
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSearch(e.target.value);
         setSearchType(e.target.value); // Prop to set the search type in the parent component
-      };
+    };
 
     return(
         <div className="px-md-5 pb-5">
@@ -88,7 +64,7 @@ const GroupList: React.FC<GroupListProps> = ({onHandleActionDetails, onHandlePor
                                         columns={columns} 
                                         onHandlePortDetails ={onHandlePortDetails}
                                     />  :
-                                    <h2>Select a shop first.</h2>
+                                    <h2>Select a box first.</h2>
                                 }           
                             </div>
                         </div>

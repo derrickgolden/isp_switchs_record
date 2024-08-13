@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { useState, useEffect } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -6,9 +5,10 @@ import { left_arrow, register_illus, show_hide, logo } from '../../../assets/ima
 
 import { countries as countriesList } from 'countries-list'
 import { CountriesData, SignupDetails } from './types';
-import { server_baseurl } from '../../../baseUrl';
 
 import Swal from 'sweetalert2'
+import { signupUser } from './apiCalls/authAPIs';
+import { BeatLoader } from 'react-spinners';
 
 const countries: CountriesData = countriesList;
 type UserAcc = "owner" | "staff";
@@ -23,6 +23,8 @@ const Signup = () =>{
         country: "KE", password: "", phone:"", user_type: user_type, admin_email: "",
         admin_pass: ""
     })
+    const [isLoading, setIsLoading] = useState(false);
+
     useEffect(() =>{
         setSignupDetails((obj) => ({...obj, user_type}))
     }, [user_type]);
@@ -55,23 +57,13 @@ const Signup = () =>{
         const phone = "+" + countries[signupDetails.country].phone + signupDetails.phone
         let data = JSON.stringify({...signupDetails, phone, auth_with: "app"});        
 
-        let config = {
-            method: 'post',
-            maxBodyLength: Infinity,
-            url: `${server_baseurl}/user/signup`,
-            headers: { 
-                'Content-Type': 'application/json'
-            },
-            data : data
-        };
-
-        axios.request(config)
-        .then((response) => {
-            if(response.data.msg === "User Registered"){
+        setIsLoading(true);
+        signupUser(data).then((res) =>{
+            if(res.success && res.details.msg === "User Registered"){
                 navigate('/user/login', {replace: true});
             }else{
                 Swal.fire({
-                    text: `${response.data.msg}`,
+                    text: `${res.details.msg}`,
                     showCloseButton: true,
                     showConfirmButton: false,
                     animation: false,
@@ -79,19 +71,10 @@ const Signup = () =>{
                     padding: "5px"
                 })
             }
-        })
-        .catch((error) => {
-            console.log(error);
-            Swal.fire({
-                text: `Server Side Error`,
-                showCloseButton: true,
-                showConfirmButton: false,
-                animation: false,
-                color: "#dc3545",
-                padding: "5px"
-            })
+        }).finally(()=>{
+            setIsLoading(false);
         });
-    }
+    };
 
     return(
         <section className="log-reg register land-pg col-12 auth-bd pt-5">
@@ -211,7 +194,21 @@ const Signup = () =>{
                                         }
                                         
                                         <div className="btn-area py-2" >
-                                            <button type="submit" className="cmn-btn btn btn-primary col-10 ">Register Now</button>
+                                            {/* <button type="submit" className="cmn-btn btn btn-primary col-10 ">Register Now</button> */}
+                                            <button type="submit" disabled ={isLoading} 
+                                                className={`cmn-btn btn btn-primary d-flex gap-2 align-items-center`}>
+                                                        <span>Register Now</span>
+                                                            <span>
+                                                                <BeatLoader 
+                                                                    color="#fff"
+                                                                    loading={isLoading}
+                                                                    cssOverride={{ display: "flex", margin: "0 auto" }}
+                                                                    size={16}
+                                                                    aria-label="Loading Spinner"
+                                                                    data-testid="loader"
+                                                                />
+                                                            </span>
+                                            </button>
                                         </div>
                                     </form>
                                     <div className="privacy text-dark">

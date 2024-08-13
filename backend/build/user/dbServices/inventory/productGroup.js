@@ -1,19 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.shiftProductGroup = exports.getProductGroups = exports.updateProductDetails = exports.addProductGroup = void 0;
+exports.getBoxDetails = exports.getSiteList = exports.addSwitchDetails = exports.addBoxDetails = exports.addProductGroup = void 0;
 const { pool } = require("../../../mysqlSetup");
 const addProductGroup = async (productgroupDetails) => {
-    const { group_name, description, shop_id } = productgroupDetails;
+    const { site_location, description, shop_id } = productgroupDetails;
     const connection = await pool.getConnection();
     try {
         var [res] = await connection.query(`
-                INSERT INTO product_group (group_name, description, shop_id)
+                INSERT INTO site_details (site_location, description, shop_id)
                 VALUES (?, ?, ?)
-            `, [group_name, description, shop_id]);
+            `, [site_location, description, shop_id]);
         connection.release();
         return {
             success: true,
-            msg: `Product Group ${group_name} Registered`,
+            msg: `Site Loacation at ${site_location} Registered`,
             details: []
         };
     }
@@ -29,37 +29,20 @@ const addProductGroup = async (productgroupDetails) => {
     }
 };
 exports.addProductGroup = addProductGroup;
-const updateProductDetails = async (productgroupDetails) => {
-    const { product_id, warning_limit, product_name } = productgroupDetails;
+const addBoxDetails = async (productgroupDetails) => {
+    const { site_id, building_name, description, shop_id } = productgroupDetails;
     const connection = await pool.getConnection();
     try {
         var [res] = await connection.query(`
-                UPDATE stock 
-                SET warning_limit = ?
-                WHERE product_id = ?
-            `, [warning_limit, product_id]);
-        var [name_res] = await connection.query(`
-                UPDATE product_list 
-                SET product_name = ?
-                WHERE product_id = ?
-            `, [product_name, product_id]);
+                INSERT INTO box_details (site_id, building_name, description, shop_id)
+                VALUES (?, ?, ?, ?)
+            `, [site_id, building_name, description, shop_id]);
         connection.release();
-        if (res.affectedRows > 0 || name_res.affectedRows > 0) {
-            return {
-                err: false,
-                success: true,
-                msg: `Product details updated`,
-                details: res
-            };
-        }
-        else {
-            return {
-                err: false,
-                success: false,
-                msg: `No rows were updated. Product not found.`,
-                details: res
-            };
-        }
+        return {
+            success: true,
+            msg: `Box at ${building_name} is Registered`,
+            details: []
+        };
     }
     catch (error) {
         console.error('Error:', error.message);
@@ -72,51 +55,55 @@ const updateProductDetails = async (productgroupDetails) => {
         }
     }
 };
-exports.updateProductDetails = updateProductDetails;
-const getProductGroups = async (filterNull, shop_id) => {
+exports.addBoxDetails = addBoxDetails;
+const addSwitchDetails = async (productgroupDetails) => {
+    const { box_id, description, switch_no, total_ports } = productgroupDetails;
     const connection = await pool.getConnection();
     try {
-        // Organize SQL query for better readability
-        const query = `
-        SELECT
-            mg.group_id,
-            mg.group_name,
-            mg.description,
-            JSON_ARRAYAGG(
-                JSON_OBJECT(
-                    'product_id', ml.product_id,
-                    'product_code', ml.product_code,
-                    'product_name', ml.product_name,
-                    'instructions', ml.instructions,
-                    'side_effect', ml.side_effect,
-                    'img_path', ml.img_path,
-                    'pricing_id', p.pricing_id,
-                    'price', p.price,
-                    'package_cost', p.package_cost,
-                    'stock_qty', s.containers,
-                    'package_size', s.units_per_container,
-                    'open_container_units', s.open_container_units
-                )
-            ) AS products
-        FROM
-            product_group mg
-        LEFT JOIN
-            product_list ml ON mg.group_id = ml.group_id
-        LEFT JOIN
-            pricing p ON ml.product_id = p.product_id
-        LEFT JOIN
-            stock s ON ml.product_id = s.product_id
-        WHERE
-            ${filterNull ? "ml.product_id IS NOT NULL AND" : ""}
-            mg.shop_id = ?
-        GROUP BY
-            mg.group_id, mg.group_name, mg.description;
-        `;
-        const [res] = await connection.query(query, [shop_id]);
+        await connection.beginTransaction();
+        const [res] = await connection.query(`
+            INSERT INTO switch_details(box_id, switch_no, total_ports, description)
+            VALUES (?, ?, ?, ?)
+        `, [box_id, switch_no, total_ports, description]);
+        const insert_id = res.insertId; // Correctly extract the insert_id
+        for (let i = 1; i <= Number(total_ports); i++) {
+            await connection.query(`
+                INSERT INTO port_details(switch_id, port_no, status, description)
+                VALUES (?, ?, 'unconnected', '')
+            `, [insert_id, i]); // Assuming initial status is 'inactive' and description is empty
+        }
+        await connection.commit();
+        connection.release();
+        return {
+            err: false,
+            success: true,
+            msg: `New switch added successfully`,
+            details: res
+        };
+    }
+    catch (error) {
+        console.error('Error:', error.message);
+        connection.release();
+        if (error.sqlMessage) {
+            return { success: false, msg: error.sqlMessage };
+        }
+        else {
+            return { success: false, msg: error.message };
+        }
+    }
+};
+exports.addSwitchDetails = addSwitchDetails;
+const getSiteList = async (shop_id) => {
+    const connection = await pool.getConnection();
+    try {
+        var [res] = await connection.query(`
+            SELECT * FROM site_details 
+            WHERE shop_id = ?
+        `, [shop_id]);
         connection.release();
         return {
             success: true,
-            msg: `Product Group list`,
+            msg: `Site list`,
             details: res,
         };
     }
@@ -131,50 +118,90 @@ const getProductGroups = async (filterNull, shop_id) => {
         }
     }
 };
-exports.getProductGroups = getProductGroups;
-const shiftProductGroup = async (productgroupDetails) => {
-    const { product_id, group_id } = productgroupDetails;
+exports.getSiteList = getSiteList;
+const getBoxDetails = async (shop_id) => {
     const connection = await pool.getConnection();
     try {
         var [res] = await connection.query(`
-                UPDATE product_list 
-                SET group_id = ?
-                WHERE product_id = ?
-            `, [group_id, product_id]);
+        SELECT 
+            bd.shop_id,
+            bd.box_id,
+            bd.site_id,
+            bd.building_name,
+            bd.description AS box_description,
+            sd.site_location,
+            sd.description AS site_description,
+            IFNULL(
+                JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'switch_id', sw.switch_id,
+                        'switch_no', sw.switch_no,
+                        'total_ports', sw.total_ports,
+                        'description', sw.description,
+                        'ports', (
+                            SELECT IFNULL(
+                                JSON_ARRAYAGG(
+                                    JSON_OBJECT(
+                                        'port_id', pd.port_id,
+                                        'port_number', pd.port_no,
+                                        'status', pd.status,
+                                        'description', pd.description,
+                                        'client_details', IFNULL(
+                                            JSON_OBJECT(
+                                                'username', cd.username,
+                                                'house_no', cd.house_no,
+                                                'phone', cd.phone
+                                            ), 
+                                            JSON_OBJECT(
+                                                'username', NULL,
+                                                'house_no', NULL,
+                                                'phone', NULL
+                                            )
+                                        )
+                                    )
+                                ), JSON_ARRAY())
+                            FROM port_details pd
+                            LEFT JOIN client_details cd ON pd.port_id = cd.port_id
+                            WHERE pd.switch_id = sw.switch_id
+                        )
+                    )
+                ), JSON_ARRAY()
+            ) AS switches
+        FROM 
+            box_details bd
+        JOIN 
+            site_details sd ON bd.site_id = sd.site_id
+        LEFT JOIN 
+            switch_details sw ON bd.box_id = sw.box_id
+        WHERE 
+            bd.shop_id = ? -- Replace ? with the specific shop_id or pass it as a parameter
+        GROUP BY 
+            bd.box_id, sd.site_id;
+    `, [shop_id]);
         connection.release();
-        if (res.affectedRows > 0) {
-            return {
-                err: false,
-                success: true,
-                msg: `Group has been shifted`,
-                details: res
-            };
-        }
-        else {
-            return {
-                err: false,
-                success: false,
-                msg: `No rows were updated. Product not found.`,
-                details: res
-            };
-        }
+        return {
+            success: true,
+            msg: `Site list`,
+            details: res,
+        };
     }
     catch (error) {
-        console.error('Error: ', error);
+        console.error('Error:', error.message);
         connection.release();
         if (error.sqlMessage) {
-            return { success: false, msg: error.sqlMessage };
+            return { success: false, msg: "Database Error", err: error.sqlMessage };
         }
         else {
-            return { success: false, msg: error.message };
+            return { success: false, msg: "Database Error", err: error.message };
         }
     }
 };
-exports.shiftProductGroup = shiftProductGroup;
+exports.getBoxDetails = getBoxDetails;
 module.exports = {
     addProductGroup: exports.addProductGroup,
-    getProductGroups: exports.getProductGroups,
-    updateProductDetails: exports.updateProductDetails,
-    shiftProductGroup: exports.shiftProductGroup
+    addBoxDetails: exports.addBoxDetails,
+    getSiteList: exports.getSiteList,
+    getBoxDetails: exports.getBoxDetails,
+    addSwitchDetails: exports.addSwitchDetails,
 };
 //# sourceMappingURL=productGroup.js.map

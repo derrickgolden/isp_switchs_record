@@ -6,11 +6,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const productGroup_1 = require("../../dbServices/inventory/productGroup");
 const router = express_1.default.Router();
-router.post('/add-group', async (req, res) => {
-    const { group_name, description, shop_id } = req.body;
+router.post('/add-site', async (req, res) => {
+    const { site_location, description, shop_id } = req.body;
     const token = req.header('Authorization');
     try {
-        const response = await (0, productGroup_1.addProductGroup)({ group_name, description, shop_id });
+        const response = await (0, productGroup_1.addProductGroup)({ site_location, description, shop_id });
         response.success ?
             res.status(200).json(response) :
             res.status(302).json(response);
@@ -20,10 +20,11 @@ router.post('/add-group', async (req, res) => {
         res.status(302).json({ success: false, msg: "sever side error", err: error.message });
     }
 });
-router.post('/get-groups', async (req, res) => {
-    const { filterNull, shop_id } = req.body || false;
+router.post('/add-box', async (req, res) => {
+    const { site_id, description, building_name, shop_id } = req.body;
+    const token = req.header('Authorization');
     try {
-        const response = await (0, productGroup_1.getProductGroups)(filterNull, shop_id);
+        const response = await (0, productGroup_1.addBoxDetails)({ site_id, building_name, description, shop_id });
         response.success ?
             res.status(200).json(response) :
             res.status(302).json(response);
@@ -33,23 +34,36 @@ router.post('/get-groups', async (req, res) => {
         res.status(302).json({ success: false, msg: "sever side error", err: error.message });
     }
 });
-router.post('/update', async (req, res) => {
+router.post('/get-site', async (req, res) => {
+    const { shop_id } = req.body;
+    try {
+        const response = await (0, productGroup_1.getSiteList)(shop_id);
+        response.success ?
+            res.status(200).json(response) :
+            res.status(302).json(response);
+    }
+    catch (error) {
+        console.log(error);
+        res.status(302).json({ success: false, msg: "sever side error", err: error.message });
+    }
+});
+router.post('/box-details', async (req, res) => {
+    const { shop_id } = req.body;
+    try {
+        const response = await (0, productGroup_1.getBoxDetails)(shop_id);
+        response.success ?
+            res.status(200).json(response) :
+            res.status(302).json(response);
+    }
+    catch (error) {
+        console.log(error);
+        res.status(302).json({ success: false, msg: "sever side error", err: error.message });
+    }
+});
+router.post('/add-switch', async (req, res) => {
     const body = req.body;
     try {
-        const response = await (0, productGroup_1.updateProductDetails)(body);
-        response.success ?
-            res.status(200).json(response) :
-            res.status(302).json(response);
-    }
-    catch (error) {
-        console.log(error);
-        res.status(302).json({ success: false, msg: "sever side error", err: error.message });
-    }
-});
-router.patch('/shift-group', async (req, res) => {
-    const body = req.body;
-    try {
-        const response = await (0, productGroup_1.shiftProductGroup)(body);
+        const response = await (0, productGroup_1.addSwitchDetails)(body);
         response.success ?
             res.status(200).json(response) :
             res.status(302).json(response);

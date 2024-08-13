@@ -7,7 +7,7 @@ import { ALogin } from './admin/components';
 import LandingPageHeader from './user/sections/LandingPageHeader';
 import RegisterShop from './user/sections/shop/RegisterShop';
 import SummaryDetails from './user/components/inventory/SummaryDetails';
-import ChangePassword from './user/pages/ChangePassword';
+import ChangePassword from './user/components/auth/ChangePassword';
 import { useEffect } from 'react';
 
 function App() {

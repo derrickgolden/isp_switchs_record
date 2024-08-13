@@ -10,7 +10,7 @@ require('dotenv').config();
 
 import adminauth from './user/routes/auth'
 import siteDetails from './user/routes/inventory/productGroup'
-import productList from './user/routes/inventory/productList'
+import switchDetails from './user/routes/inventory/switchDetails'
 import sales from './user/routes/sales/registerSales'
 import report from './user/routes/sales/getSalesReport'
 import shop from './user/routes/shop'
@@ -19,8 +19,6 @@ import paymentMethodSales from './user/routes/payments/getPayMethodsReport'
 import paymentDetails from './user/routes/payments/paymentDetails'
 import customer from './user/routes/customers';
 import invoices from './user/routes/invoices'
-
-import {authenticateToken} from './user/middlewares/authenticateToken';
 
 const storage = multer.diskStorage({
     destination: (req, file, callback) => {
@@ -43,7 +41,13 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const app = express();
-app.use(cors({origin: ["https://shoppos.netlify.app", "http://localhost:5173"]}))
+app.use(cors({
+  origin: ['https://isp.easytech.africa', 'http://localhost:5173'],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  allowedHeaders: 'Content-Type,Authorization'
+}))
+
 // app.use((req, res, next) => {
 //   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
 //   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
@@ -65,9 +69,10 @@ app.get("/", (req, res) => {
 });
 
 app.use("/user", adminauth);
-app.use("/user", upload.single('logo'), authenticateToken, shop);
-app.use("/user/site", [siteDetails, productList]);
-app.use("/user/sales", authenticateToken, [sales, report]);
+app.use("/hello", (req, res) => {res.send("Hello") });
+app.use("/user", upload.single('logo'), shop);
+app.use("/user/site", [siteDetails]);
+app.use("/user/switch", [switchDetails]);
 app.use("/user/stock", stock);
 app.use("/user/pay-method", [paymentMethodSales, paymentDetails]);
 app.use("/user/customer", customer);

@@ -7,11 +7,20 @@ const pool = mysql.createPool({
     host: "localhost",
     user: "root",
     password: "Zippy@123456",
-    database: "shop_pos",
+    database: "isp_switch_records",
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
 });
+// const pool = mysql.createPool({
+//     host: "localhost",
+//     user: "karibuch_root",
+//     password: "Zippy@123456!",
+//     database: "karibuch_isp_switch_records",
+//     waitForConnections: true,
+//     connectionLimit: 10,
+//     queueLimit: 0
+// });
 // const pool = mysql.createPool({
 //     host: process.env.DATABASE_HOST,
 //     user: process.env.DATABASE_USER,

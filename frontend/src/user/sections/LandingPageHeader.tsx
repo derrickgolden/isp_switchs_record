@@ -6,7 +6,6 @@ import { useState, useEffect, useRef } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft, faChevronDown, faFileInvoice, faGear } from '@fortawesome/free-solid-svg-icons'
 import { MdDashboard, MdInventory, MdPayments, MdPointOfSale } from "react-icons/md";
-import { TbReportMoney } from "react-icons/tb";
 import { FaLayerGroup, FaListAlt, FaSalesforce } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
@@ -95,7 +94,7 @@ export default function LandingPageHeader() {
                 headerToggle = {headerToggle} 
                 logoutHandle = {logoutHandle}
             />
-            <div className="manubar">
+            {/* <div className="manubar">
                 <div className={`l-navbar menubar scroll-bar ${headerToggle ? "show" : ""}`} id="nav-bar">
                     <nav className="nav">
                         <div> 
@@ -165,83 +164,6 @@ export default function LandingPageHeader() {
                                     </div>
                                 </div>
 
-                             {/*    <div className="accordion" id="accordionExample">
-                                    <div className="accordion-item">
-                                        <p className="accordion-header" id="headingOne">
-                                            <Link onClick={updateActive} to="#" type="button" onClick={() => setPlus4(!plus4)} data-bs-toggle="collapse" data-bs-target="#addons" aria-expanded="true" aria-controls="addons" className={`nav_link`}>
-                                                <FontAwesomeIcon icon={faPuzzlePiece} />
-                                                <span className="nav_name ">Addons <b>{plus4 ? <FontAwesomeIcon icon={faChevronLeft} /> : <FontAwesomeIcon icon={faChevronDown} />}</b></span>
-                                            </Link>
-                                        </p>
-                                        <div id="addons" className="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                                            <div className="accordion-body">
-                                                <Link onClick={updateActive} to="/sms-transaction" className={`nav_link ${pathname == "/sms-transaction" && 'active'}`}>
-                                                <FontAwesomeIcon icon={faMessage} />
-                                                    <span className="nav_name">Sms Transaction</span>
-                                                </Link>
-                                                <Link onClick={updateActive} to="/sms-setting/bulksmsbd" className={`nav_link ${pathname == "/sms-setting/bulksmsbd" && 'active'}`}>
-                                                <FontAwesomeIcon icon={faMessage} />
-                                                    <span className="nav_name">Sms List</span>
-                                                </Link>
-                                                
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="accordion" id="accordionExample">
-                                    <div className="accordion-item">
-                                        <p className="accordion-header" id="headingOne">
-                                            <Link onClick={updateActive} to="#" type="button" onClick={() => setPlus6(!plus6)} data-bs-toggle="collapse" data-bs-target="#rollManagement" aria-expanded="true" aria-controls="paymentSystem" className={`nav_link `}>
-                                            <FontAwesomeIcon icon={faUsersGear} />
-                                                <span className="nav_name ">Role Management <b>{plus6 ? <FontAwesomeIcon icon={faChevronLeft} /> : <FontAwesomeIcon icon={faChevronDown} />}</b></span>
-                                            </Link>
-                                        </p>
-                                        <div id="rollManagement" className="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                                            <div className="accordion-body">
-                                                <Link onClick={updateActive} to="/role-user" className={`nav_link ${pathname == "/role-user" && 'active'}`}>
-                                                    <FontAwesomeIcon icon={faPenToSquare} />
-                                                    <span className="nav_name">Role Create</span>
-                                                </Link>
-                                                <Link onClick={updateActive} to="/role-access" className={`nav_link ${pathname == "/role-access" && 'active'}`}>
-                                                <FontAwesomeIcon icon={faEye} />
-                                                    <span className="nav_name">Role Access</span>
-                                                </Link>
-                                                
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <Link onClick={updateActive} to="/theme-market" className={`nav_link ${pathname == "/theme-market" && 'active'}`}>
-                                    <FontAwesomeIcon icon={faStore} />
-                                    <span className="nav_name">Theme Market</span>
-                                </Link> */}
-                                <Link onClick={handleLinkClick} to="/user/change-pass" id='changepass'
-                                className={`${activeLink === 'changepass'? 'text-white font-weight-bold ' :"" }nav_link`}>
-                                    <FontAwesomeIcon icon={faGear} />
-                                    <span className="nav_name" id='changepass'>Change Password</span>
-                                </Link>
-                                {/* <Link onClick={updateActive} to="/activities" className={`nav_link ${pathname == "/activities" && 'active'}`}>
-                                    <FontAwesomeIcon icon={faListCheck} />
-                                    <span className="nav_name">Activity Logs</span>
-                                </Link> */}
-                                {/* <div className="accordion" id="accordionExample">
-                                    <div className="accordion-item">
-                                        <p className="accordion-header" id="headingOne">
-                                            <Link onClick={updateActive} to="#" type="button" onClick={() => setPlus5(!plus5)} data-bs-toggle="collapse" data-bs-target="#help" aria-expanded="true" aria-controls="help" className={`nav_link `}>
-                                                <FontAwesomeIcon icon={faCircleInfo} />
-                                                <span className="nav_name ">Help <b>{plus5 ? <FontAwesomeIcon icon={faChevronLeft} /> : <FontAwesomeIcon icon={faChevronDown} />}</b></span>
-                                            </Link>
-                                        </p>
-                                        <div id="help" className="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                                            <div className="accordion-body">
-                                                <Link onClick={updateActive} to="/general-setting" className={`nav_link `}>
-                                                    <FontAwesomeIcon icon={faGear} />
-                                                    <span className="nav_name">General Setting</span>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> */}
                                 <Link onClick={logoutHandle} to="#" id='logout'
                                 className={`${activeLink === 'logout'? 'text-white font-weight-bold ' :"" }nav_link`}>
                                     <FontAwesomeIcon icon={faFileInvoice} />
@@ -251,7 +173,7 @@ export default function LandingPageHeader() {
                         </div> 
                     </nav>
                 </div>
-            </div>
+            </div> */}
 
         </div>
         <Outlet />

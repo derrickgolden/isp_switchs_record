@@ -26,9 +26,10 @@ router.post('/register-shop', async (req, res) => {
     }
 });
 router.get('/shop-details', async (req, res) => {
-    const { added_by } = req.user;
+    // const {added_by} = req.user;
+    console.log({ user: req.user });
     try {
-        const response = await (0, shop_1.getShopListDetails)(added_by);
+        const response = await (0, shop_1.getShopListDetails)();
         response.success ?
             res.status(200).json(response) :
             res.status(302).json(response);

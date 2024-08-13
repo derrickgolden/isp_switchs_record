@@ -17,6 +17,8 @@ export const getShopDetailsApi = async(): Promise<Shop[] | undefined> =>{
         return
     }
 
+    const data = JSON.stringify({addedBy: 38});
+
     let config = {
         method: 'get',
         maxBodyLength: Infinity,

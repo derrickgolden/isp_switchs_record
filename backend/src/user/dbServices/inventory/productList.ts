@@ -1,20 +1,18 @@
 import fs from 'fs'
 
 import { RowDataPacket } from "mysql2";
-import { GetProductListProps, productDetailsProps } from "user/types/productDetails";
+import { GetProductListProps, UpdatePortProps } from "user/types/productDetails";
 import { universalResponse } from "user/types/universalResponse";
 const { pool } = require("../../../mysqlSetup");
 
 interface Product {
     product_name: string;
-}
+};
 
-export const addProduct = async (productDetails: productDetailsProps, img_file: Express.Multer.File ): Promise<universalResponse> => {
+export const updatePort = async (portDetails: UpdatePortProps ): Promise<universalResponse> => {
 
-    const {product_code, product_name, stock_qty, shop_id,
-    instructions, side_effect, group_id, price, package_cost, package_size} = productDetails;
-
-    const path = img_file?.filename || null;
+    const { status, port_id, port_number, description, clientDetails } = portDetails;
+    const { house_no, phone, username } = clientDetails;
     
     const connection: RowDataPacket = await pool.getConnection();
     try {
@@ -22,44 +20,26 @@ export const addProduct = async (productDetails: productDetailsProps, img_file: 
         await connection.beginTransaction();
 
             var [products]: [Product[]] = await connection.query(`
-                SELECT product_name FROM product_list
-                WHERE shop_id = ?
-            `, [shop_id]);
-
-            const productExists = products.some(product => product.product_name === product_name);
-
-            if (productExists) {
-                if(img_file){
-                    fs.unlink(img_file.path, (err) => {
-                        if (err) {
-                            console.error(`Error deleting file ${img_file.originalname}:`, err);
-                        }
-                    });
+                UPDATE port_details
+                SET status = ?, description = ?
+                WHERE port_id = ?
+            `, [status, description, port_id]);
+            
+            if(house_no || phone || username){
+                var [ resp ] = await connection.query(`
+                    UPDATE client_details
+                    SET house_no = ?, phone = ?, username = ?
+                    WHERE port_id = ?
+                `, [house_no, phone, username, port_id]);
+                
+                if (resp.affectedRows === 0 && resp.changedRows === 0) {
+                    var [ resp ] = await connection.query(`
+                        INSERT INTO client_details (house_no, phone, username, port_id)
+                        VALUES  ( ?, ?, ?, ? )
+                    `, [house_no, phone, username, port_id]);
+                    // console.log("No rows were updated.");
                 }
-                return {
-                    success: false,
-                    msg: `${product_name} is already registered.`,
-                    details: []
-                };
-            } else {
-                var [res] = await connection.query(`
-                    INSERT INTO product_list (product_code, product_name, 
-                        instructions, side_effect, group_id, img_path, shop_id)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
-                `, [product_code, product_name, instructions, side_effect, group_id, path, shop_id]);
-                    
-                const product_id = res.insertId;
-                    
-                var [pricing_res] = await connection.query(`
-                    INSERT INTO pricing (product_id, price, package_cost )
-                    VALUES (?, ?, ?)
-                `, [product_id, price, package_cost]);
-    
-                var [stock_res] = await connection.query(`
-                    INSERT INTO stock (product_id, containers, units_per_container, 
-                        open_container_units, warning_limit)
-                    VALUES (?, ?, ?, ?, ?)
-                `, [product_id, stock_qty, package_size, 0, 20]);
+                // console.log(resp);
             }
 
         await connection.commit();
@@ -68,7 +48,7 @@ export const addProduct = async (productDetails: productDetailsProps, img_file: 
 
         return {
             success: true,
-            msg: `${product_name} has been Registered`,
+            msg: `Port ${port_number} has been updated`,
             details: []
         };
     } catch (error) {
@@ -161,7 +141,7 @@ export const deleteProduct = async (product_id: number ): Promise<universalRespo
 };
 
 module.exports = {
-    addProduct,
+    updatePort,
     getProductList,
     deleteProduct,
 }

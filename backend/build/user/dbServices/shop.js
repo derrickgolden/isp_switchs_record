@@ -10,7 +10,7 @@ const registerShop = async ({ shopDetails, user, logo }) => {
     try {
         await connection.beginTransaction();
         var [res] = await connection.query(`
-                INSERT INTO shop_details (
+                INSERT INTO company_details (
                     user_id, shop_name, location, shop_email, shop_tel, logo_path, extra_info
                 )
                 VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -20,7 +20,7 @@ const registerShop = async ({ shopDetails, user, logo }) => {
         connection.release();
         return {
             success: true,
-            msg: `Shop has been Registered`,
+            msg: `Company has been Registered`,
             details: [{ shop_id }]
         };
     }
@@ -36,17 +36,17 @@ const registerShop = async ({ shopDetails, user, logo }) => {
     }
 };
 exports.registerShop = registerShop;
-const getShopListDetails = async (user_id) => {
+const getShopListDetails = async () => {
     const connection = await pool.getConnection();
     try {
         var [res] = await connection.query(`
-                SELECT * FROM shop_details 
+                SELECT * FROM company_details 
                 WHERE user_id = ?
-            `, [user_id]);
+            `, [38]);
         connection.release();
         return {
             success: true,
-            msg: `Shop details`,
+            msg: `Company details`,
             details: res
         };
     }

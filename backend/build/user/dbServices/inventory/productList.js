@@ -1,58 +1,39 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProduct = exports.getProductList = exports.addProduct = void 0;
-const fs_1 = __importDefault(require("fs"));
+exports.deleteProduct = exports.getProductList = exports.updatePort = void 0;
 const { pool } = require("../../../mysqlSetup");
-const addProduct = async (productDetails, img_file) => {
-    const { product_code, product_name, stock_qty, shop_id, instructions, side_effect, group_id, price, package_cost, package_size } = productDetails;
-    const path = img_file?.filename || null;
+;
+const updatePort = async (portDetails) => {
+    const { status, port_id, port_number, description, clientDetails } = portDetails;
+    const { house_no, phone, username } = clientDetails;
     const connection = await pool.getConnection();
     try {
         await connection.beginTransaction();
         var [products] = await connection.query(`
-                SELECT product_name FROM product_list
-                WHERE shop_id = ?
-            `, [shop_id]);
-        const productExists = products.some(product => product.product_name === product_name);
-        if (productExists) {
-            if (img_file) {
-                fs_1.default.unlink(img_file.path, (err) => {
-                    if (err) {
-                        console.error(`Error deleting file ${img_file.originalname}:`, err);
-                    }
-                });
+                UPDATE port_details
+                SET status = ?, description = ?
+                WHERE port_id = ?
+            `, [status, description, port_id]);
+        if (house_no || phone || username) {
+            var [resp] = await connection.query(`
+                    UPDATE client_details
+                    SET house_no = ?, phone = ?, username = ?
+                    WHERE port_id = ?
+                `, [house_no, phone, username, port_id]);
+            if (resp.affectedRows === 0 && resp.changedRows === 0) {
+                var [resp] = await connection.query(`
+                        INSERT INTO client_details (house_no, phone, username, port_id)
+                        VALUES  ( ?, ?, ?, ? )
+                    `, [house_no, phone, username, port_id]);
+                // console.log("No rows were updated.");
             }
-            return {
-                success: false,
-                msg: `${product_name} is already registered.`,
-                details: []
-            };
-        }
-        else {
-            var [res] = await connection.query(`
-                    INSERT INTO product_list (product_code, product_name, 
-                        instructions, side_effect, group_id, img_path, shop_id)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
-                `, [product_code, product_name, instructions, side_effect, group_id, path, shop_id]);
-            const product_id = res.insertId;
-            var [pricing_res] = await connection.query(`
-                    INSERT INTO pricing (product_id, price, package_cost )
-                    VALUES (?, ?, ?)
-                `, [product_id, price, package_cost]);
-            var [stock_res] = await connection.query(`
-                    INSERT INTO stock (product_id, containers, units_per_container, 
-                        open_container_units, warning_limit)
-                    VALUES (?, ?, ?, ?, ?)
-                `, [product_id, stock_qty, package_size, 0, 20]);
+            // console.log(resp);
         }
         await connection.commit();
         connection.release();
         return {
             success: true,
-            msg: `${product_name} has been Registered`,
+            msg: `Port ${port_number} has been updated`,
             details: []
         };
     }
@@ -67,7 +48,7 @@ const addProduct = async (productDetails, img_file) => {
         }
     }
 };
-exports.addProduct = addProduct;
+exports.updatePort = updatePort;
 const getProductList = async (details) => {
     const { shop_id } = details;
     const connection = await pool.getConnection();
@@ -142,7 +123,7 @@ const deleteProduct = async (product_id) => {
 };
 exports.deleteProduct = deleteProduct;
 module.exports = {
-    addProduct: exports.addProduct,
+    updatePort: exports.updatePort,
     getProductList: exports.getProductList,
     deleteProduct: exports.deleteProduct,
 };

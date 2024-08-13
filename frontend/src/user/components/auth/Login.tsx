@@ -4,7 +4,8 @@ import { useDispatch } from 'react-redux';
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { logo } from '../../../assets/images';
 import { setUserDetails } from '../../../redux/userDetails';
-import loginApi from "./apiCalls/loginApi";
+import { BeatLoader } from "react-spinners";
+import { loginUserAPI } from "./apiCalls/authAPIs";
 
 export interface PersonDetails{ email: string; password: string; acc_type: string }
 type UserAcc = "admin" | "staff";
@@ -18,6 +19,7 @@ const Login: React.FC = () =>{
     const [loginDetails, setLoginDetails] = useState<PersonDetails>({
         email:"", password: "", acc_type
     });
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>{
         const name = e.target.name
@@ -25,13 +27,13 @@ const Login: React.FC = () =>{
         setLoginDetails((obj) =>({...obj, [name]: value}))
     };
 
-    useEffect(() =>{
-        if(urltoken === "kjcc7BiGOqHZCw48zuEu82M0rHxImr1txrgkqqf"){
-            let data = JSON.stringify({email:"goldenderrick95@gmail.com", password: "1234", auth_with: "app"});
+    // useEffect(() =>{
+    //     if(urltoken === "kjcc7BiGOqHZCw48zuEu82M0rHxImr1txrgkqqf"){
+    //         let data = JSON.stringify({email:"goldenderrick95@gmail.com", password: "1234", auth_with: "app"});
 
-            loginApi({data, dispatch, setUserDetails, navigate, setLoginDetails});
-        }
-    }, []);
+    //         loginApi({data, dispatch, setUserDetails, navigate, setLoginDetails});
+    //     }
+    // }, []);
 
     useEffect(()=>{
         setLoginDetails((obj) => ({...obj, acc_type}));
@@ -42,7 +44,20 @@ const Login: React.FC = () =>{
         
         let data = JSON.stringify({...loginDetails, auth_with: "app"});
 
-       loginApi({data, dispatch, setUserDetails, navigate, setLoginDetails});
+        setIsLoading(true);
+        loginUserAPI(data).then((res) =>{
+            console.log(res)
+            const {details, success} = res;
+            if(success){
+                sessionStorage.setItem("user", JSON.stringify(details.details[0]));
+                sessionStorage.setItem("userToken", JSON.stringify(details.token));
+                dispatch(setUserDetails(details.details[0]));
+                navigate('/user/dashboard', {replace: true});
+            }
+        }).finally(() =>{
+            setLoginDetails((obj) => ({...obj, password: ''}))
+            setIsLoading(false);
+        })
     }
 
     return(
@@ -78,7 +93,7 @@ const Login: React.FC = () =>{
                                     <div className=" bg-white p-10 rounded" id="myTabContent" style={{ height: "100%" }}>
                                         <div className="tab-pane fade p-10 show active" id="admin" role="tabpanel" aria-labelledby="admin-tab">                                
                                             <form onSubmit={handleLoginDetailsSubmit} action="#" className="mt-3" style={{ height: "100%" }}>
-                                                <div className="row h-100">
+                                                <div className="row h-100 text-start">
                                                     <div className="col-12 d-flex ">
                                                         <div className="form-group w-100 text-dark text-left my-3">
                                                             <label htmlFor="email">Enter email</label>
@@ -104,8 +119,21 @@ const Login: React.FC = () =>{
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className="btn-area my-3">
-                                                    <button type='submit' className="btn btn-primary">Log in</button>
+                                                <div className="btn-area my-3 text-center">
+                                                    <button type="submit" disabled ={isLoading} 
+                                                        className={`btn btn-primary d-flex gap-2 h-100 align-items-center`}>
+                                                        <span>Log in</span>
+                                                            <span>
+                                                                <BeatLoader 
+                                                                    color="#fff"
+                                                                    loading={isLoading}
+                                                                    cssOverride={{ display: "flex", margin: "0 auto" }}
+                                                                    size={16}
+                                                                    aria-label="Loading Spinner"
+                                                                    data-testid="loader"
+                                                                />
+                                                            </span>
+                                                    </button>
                                                 </div>
                                                 <div className="remember-forgot d-flex justify-content-between pt-3">                                          
                                                     <div className="forget-pw">

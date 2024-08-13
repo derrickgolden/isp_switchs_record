@@ -3,8 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerSales = void 0;
 const { pool } = require("../../../mysqlSetup");
 const registerSales = async (saleDetails, user_id) => {
-    const { orderDetails, totalPrice, moneyTrans, updateStock, shop_id, total_profit } = saleDetails;
-    // console.log(sale_date);
+    const { orderDetails, totalPrice, moneyTrans, updateStock, shop_id, total_profit, invoiceDetails } = saleDetails;
     const sale_date = new Date();
     const connection = await pool.getConnection();
     try {
@@ -19,19 +18,30 @@ const registerSales = async (saleDetails, user_id) => {
         //         VALUES (?, ?)
         //     `, [true, sale_date]);
         // }
-        const { customerGave, change } = moneyTrans;
+        // Insert sales
+        const { customerGave, change, remaining, payment_status } = moneyTrans;
+        const { sendInvoice, customer_id } = invoiceDetails;
         var [res] = await connection.query(`
-                INSERT INTO sales (sale_date, total_price, total_profit, change_amount, cashier, shop_id)
-                VALUES (?, ?, ?, ?, ?, ?)
-            `, [sale_date, totalPrice, total_profit, change, user_id, shop_id]);
+                INSERT INTO sales (sale_date, total_price, total_profit, balance, change_amount, cashier, shop_id, payment_status, customer_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `, [sale_date, totalPrice, total_profit, remaining, change, user_id, shop_id, payment_status, customer_id]);
         const sale_id = res.insertId;
         orderDetails.map(async (details) => {
-            const { product_id, units, sub_total, profit } = details;
+            const { product_id, units, sub_total, profit, price, discount } = details;
             var [pricing_res] = await connection.query(`
-                    INSERT INTO sales_items (sale_id, product_id, units_sold, sub_total, profit)
-                    VALUES (?, ?, ?, ?, ?)
-                `, [sale_id, product_id, units, sub_total, profit]);
+                    INSERT INTO sales_items (sale_id, product_id, price, units_sold, sub_total, profit, discount)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                `, [sale_id, product_id, price, units, sub_total, profit, discount]);
         });
+        // insert invoice if available 
+        if (sendInvoice) {
+            const invoice_date = new Date();
+            var [invoice_res] = await connection.query(`
+                    INSERT INTO invoices (sale_id, customer_id, invoice_date)
+                    VALUES (?, ?, ? )
+                `, [sale_id, customer_id, invoice_date]);
+            var invoice_id = invoice_res.insertId;
+        }
         // insert paymentMethods
         Object.entries(customerGave).map(async ([key, value]) => {
             var [paymentMethods_res] = await connection.query(`
@@ -53,7 +63,7 @@ const registerSales = async (saleDetails, user_id) => {
         return {
             success: true,
             msg: `sale has been Registered`,
-            details: [{ sale_id, sale_date, ...moneyTrans }]
+            details: [{ sale_id, sale_date, ...moneyTrans, invoice_id, orderDetails }]
         };
     }
     catch (error) {

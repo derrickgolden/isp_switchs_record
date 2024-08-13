@@ -33,9 +33,8 @@ const DataTableProductGroup: React.FC<DataTableProductGroupProps> = ({
     { name: 'Total Ports', selector: (row: SwitchProps) => row.total_ports, sortable: true },
     { name: 'Action', cell: (row: SwitchProps) => <>
     <button onClick={() => onHandlePortDetails(row)} 
-        disabled= { false}
-        className={`btn p-0 px-1 btn-primary btn-sm`}  >
-            Details
+      disabled= { false } className={`btn p-0 px-1 btn-primary btn-sm`}  >
+        Details
     </button></>, },
   ];
 

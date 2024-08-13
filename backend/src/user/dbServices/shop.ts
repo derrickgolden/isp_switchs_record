@@ -43,7 +43,7 @@ export const registerShop = async ({shopDetails, user, logo}: RegisterShopProps 
     }
 };
 
-export const getShopListDetails = async (user_id: number) => {
+export const getShopListDetails = async () => {
 
     const connection: RowDataPacket = await pool.getConnection();
     try {
@@ -51,7 +51,7 @@ export const getShopListDetails = async (user_id: number) => {
             var [res] = await connection.query(`
                 SELECT * FROM company_details 
                 WHERE user_id = ?
-            `, [user_id]);
+            `, [38]);
                 
         connection.release();
 

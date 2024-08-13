@@ -4,11 +4,15 @@ import { RxAvatar } from 'react-icons/rx';
 import { getSessionStorage } from '../../controllers/getSessionStorage';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getShopDetailsApi } from '../../sections/shop/apiCalls/getShopDetails';
 import { setActiveShop } from '../../../redux/activeShop';
 import { setShopListDetails } from '../../../redux/shopListDetails';
 import { Link } from 'react-router-dom';
+import { MdDashboard } from 'react-icons/md';
+import { FaLayerGroup } from 'react-icons/fa';
+import { server_baseurl } from '../../../baseUrl';
+import { pharmLogo } from '../../../assets/images';
 
 interface DashboardHeaderProps{
     setHeaderToggle: React.Dispatch<React.SetStateAction<boolean>>; 
@@ -19,6 +23,7 @@ interface DashboardHeaderProps{
 const DashboardHeader: React.FC<DashboardHeaderProps> = ({ setHeaderToggle, headerToggle, logoutHandle }) =>{
     const activeShop = useSelector((state: RootState) => state.activeShop); 
     const shopListDetails = useSelector((state: RootState) => state.shopListDetailsList);
+    const [activeLink, setActiveLink] = useState("dashboard");
     const dispatch = useDispatch();
     
     const userShop = getSessionStorage();
@@ -35,11 +40,39 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ setHeaderToggle, head
         })
     },[shopListDetails.length === 0]);
 
+    const handleLinkClick: React.MouseEventHandler<HTMLAnchorElement>= (e) =>{
+        const target = e.currentTarget as HTMLAnchorElement;
+
+        const value = target.id;
+        setActiveLink(value); 
+    };
+
+    const logo_url = activeShop.shop?.logo_path ? 
+                    `${server_baseurl}/uploads/${activeShop.shop?.logo_path}` : `${pharmLogo}`;
+
     return(
-            <header className="header mb-4 dropdown body-pd border-bottom border " id="header">
-                <div onClick={() => setHeaderToggle(!headerToggle)} 
+            <header className="header dropdown border-bottom border  " id="header">
+                {/* <div onClick={() => setHeaderToggle(!headerToggle)} 
                     className="header_toggle" id="header-toggle">
                     {headerToggle ? <FontAwesomeIcon icon={faX} /> : <FontAwesomeIcon icon={faBars} /> }
+                </div> */}
+                <div className='d-flex text-xl'>
+                    <Link onClick={handleLinkClick} id='dashboard' to="/user/dashboard" className="nav_logo mb-0"> 
+                        <img src={logo_url} alt="" className='rounded' 
+                            style={{height: "30px", width:"30px"}}
+                        />
+                        {/* <span className="text-white ">{activeShop?.shop?.shop_name}</span>  */}
+                    </Link>
+                    <Link onClick={handleLinkClick} id='dashboard' to= "/user/dashboard"
+                        className={`${activeLink === 'dashboard'? 'text-primary font-weight-bold ' :"" }nav_link mb-0`}>
+                        <MdDashboard size={24}/>
+                        {/* <span className="nav_name ">Dashboard</span> */}
+                    </Link>
+                    <Link onClick={handleLinkClick} id='boxes' to="/user/inventory/product-group" 
+                        className={`${activeLink === 'boxes'? 'text-primary font-weight-bold ' :"" }nav_link mb-0`}>
+                        <FaLayerGroup size={24}/>
+                        {/* <span className="nav_name">Product Groups</span> */}
+                    </Link>
                 </div>
                 <div className='dropdown'>
                     <div style={{cursor: "pointer"}} className="d-flex align-items-center dropdown-toggle" 
@@ -71,6 +104,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ setHeaderToggle, head
                             </Link>
                         </li>
                         <li><hr className="dropdown-divider"/></li>
+                        
                         <li onClick={logoutHandle}>
                             <Link className="dropdown-item" to="#">
                                 Log Out

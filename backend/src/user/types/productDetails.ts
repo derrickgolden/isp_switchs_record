@@ -14,19 +14,16 @@ export interface productDetailsProp{
         img_path: string,
     }
 }
-export interface productDetailsProps{
-    price: number,
-    package_cost: string, 
-    package_size: number,
-    shop_id: number,
-    product_code: string, 
-    product_name: string, 
-    stock_qty: number, 
-    instructions: string, 
-    side_effect: string, 
-    group_id: number,
-    img_path: string,
-    
+export interface UpdatePortProps{
+    status: string; 
+    port_id: number; 
+    port_number: number;
+    description: string;
+    clientDetails: {
+        username: string;
+        phone: string;
+        house_no: string;
+    }
 }
 
 export interface SwitchDetailsProps{
