@@ -11,3 +11,11 @@ export const options = [
     { id: 'inactive', value: 'inactive', label: 'Inactive' },
     { id: 'faulty', value: 'faulty', label: 'Faulty' },
   ];
+
+export const filterBtn = [
+  {text: "all", css: "btn-primary"}, 
+  {text: "active", css: "btn-info"}, 
+  {text: "inactive", css: "btn-success"}, 
+  {text: "unconnected", css: "btn-warning"}, 
+  {text: "faulty", css: "btn-danger"}
+];

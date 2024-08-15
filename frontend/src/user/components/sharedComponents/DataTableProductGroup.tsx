@@ -12,13 +12,13 @@ const DataTableProductGroup: React.FC<DataTableProductGroupProps> = ({
 
   // console.log(apidata)
   useEffect(() => {
-    let result = data?.filter((val ) => {      
+    let result = data?.filter((val ) => { 
       if (search == 'building_name') {
         return val.building_name?.toLowerCase().match(datafilter?.toLowerCase())
       }
     })
 
-    setFinals(result)
+    setFinals(result);
   }, [datafilter])
 
   useEffect(() => {
@@ -28,14 +28,15 @@ const DataTableProductGroup: React.FC<DataTableProductGroupProps> = ({
 
   // Define columns for the nested DataTable (Sales Items)
   const subColumns = [
-    { name: 'Switch ID', selector: (row: SwitchProps) => row.switch_id, sortable: true },
-    { name: 'Switch No', selector: (row: SwitchProps) => row.switch_no, sortable: true },
-    { name: 'Total Ports', selector: (row: SwitchProps) => row.total_ports, sortable: true },
+    // { name: 'Switch ID', selector: (row: SwitchProps) => row.switch_id, sortable: true },
     { name: 'Action', cell: (row: SwitchProps) => <>
     <button onClick={() => onHandlePortDetails(row)} 
       disabled= { false } className={`btn p-0 px-1 btn-primary btn-sm`}  >
         Details
     </button></>, },
+    { name: 'Switch No', selector: (row: SwitchProps) => row.switch_no, sortable: true },
+    { name: 'Total Ports', selector: (row: SwitchProps) => row.total_ports, sortable: true },
+    { name: 'Description', selector: (row: SwitchProps) => row.description },
   ];
 
   const ExpandedComponent = ({data}: {data: BoxDetailsProps}) => {

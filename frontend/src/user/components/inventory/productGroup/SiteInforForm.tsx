@@ -4,11 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { getSessionStorage } from "../../../controllers/getSessionStorage";
 import Swal from "sweetalert2";
 import { addSiteApi } from "./apiCalls/postApiCalls";
+import { setCallApi } from "../../../../redux/callApi";
+import { useDispatch } from "react-redux";
 
 interface AddGroupFormProps{
     setShowDetails: (showDetails: string) => void;
 }
 const SiteInforForm: React.FC<AddGroupFormProps> = ({ setShowDetails}) =>{
+    const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false)
 
     const navigate = useNavigate();
@@ -45,6 +48,7 @@ const SiteInforForm: React.FC<AddGroupFormProps> = ({ setShowDetails}) =>{
         addSiteApi(data).then((res) =>{
             if(res.success){
                 setShowDetails("list");
+                dispatch(setCallApi(true));
             }
         }).finally(()=>{
             setIsLoading(false);

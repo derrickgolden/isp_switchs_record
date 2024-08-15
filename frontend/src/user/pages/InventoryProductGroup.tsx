@@ -27,16 +27,17 @@ const InventoryProductGroup = () =>{
 
     useEffect(() =>{
         const shop_id = activeShop.shop?.shop_id;
+
         if(shop_id){
             const data = JSON.stringify({shop_id});
             getBoxDetailsApi(data).then((res) =>{
-                // console.log(res)
                 if(res.success){
                     dispatch(setGroupList(res.details))
                 }
                 if(showDetails === "portdetails" && portDetails?.switch_id){
                     const newPortDetails = getSwitchById({details: res.details, switchId: portDetails?.switch_id});
                     newPortDetails ? setPortDetails(newPortDetails) : null;
+                    console.log(newPortDetails)
                 }
             });  
         }

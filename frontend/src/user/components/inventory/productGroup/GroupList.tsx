@@ -12,20 +12,20 @@ interface  GroupListProps{
 
 const GroupList: React.FC<GroupListProps> = ({ onHandlePortDetails}) =>{
     const [search, setSearch] = useState('group_name');
-    const [searchType, setSearchType] = useState('group_name');
+    const [searchType, setSearchType] = useState('building_name');
     
     const groupList = useSelector((state: RootState) => state.groupList);
     const activeShop = useSelector((state: RootState) => state.activeShop);
     // console.log(groupList)
     const columns = [
         {
-            name: "Box ID",
-            selector: (row: BoxDetailsProps) => row.box_id,
+            name: "Building Name",
+            selector: (row: BoxDetailsProps) => row.building_name,
             sortable: true
         },
         {
-            name: "Building Name",
-            selector: (row: BoxDetailsProps) => row.building_name,
+            name: "Site Location",
+            selector: (row: BoxDetailsProps) => row.site_location,
             sortable: true
         },
         {

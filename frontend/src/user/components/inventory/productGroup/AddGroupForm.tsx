@@ -6,13 +6,15 @@ import Swal from "sweetalert2";
 import { addBoxApi } from "./apiCalls/postApiCalls";
 import { getSiteDetailsApi } from "./apiCalls/getApiCalls";
 import { SiteListProps } from "./types";
+import { setCallApi } from "../../../../redux/callApi";
+import { useDispatch } from "react-redux";
 
 interface AddGroupFormProps{
     setShowDetails: (showDetails: string) => void;
 }
 const AddGroupForm: React.FC<AddGroupFormProps> = ({ setShowDetails}) =>{
-    const navigate = useNavigate();
-
+    const dispatch = useDispatch();
+    
     const [isLoading, setIsLoading] = useState(false);
     const [siteList, setSiteList] = useState<SiteListProps[]>([]);
     const [groupDetails, setGroupDetails] = useState({
@@ -58,6 +60,7 @@ const AddGroupForm: React.FC<AddGroupFormProps> = ({ setShowDetails}) =>{
             addBoxApi(data).then((res) =>{
                 if(res.success){
                     setShowDetails("list");
+                    dispatch(setCallApi(true));
                 }
             }).finally(()=>{
                 setIsLoading(false);

@@ -2,7 +2,7 @@ import PortCard from "./PortCard";
 import { PortTypes, SwitchProps } from "../../../../redux/groupList";
 import { Dispatch, useEffect, useRef, useState } from "react";
 import { AnyAction } from "@reduxjs/toolkit";
-import { customCardStyle } from "./details";
+import { customCardStyle, filterBtn } from "./details";
 
 interface PortDetailsProps{
     portDetails: SwitchProps | undefined;
@@ -32,17 +32,21 @@ const PortDetails: React.FC<PortDetailsProps> = ({setShowDetails, portDetails, d
             });
         }
         setFilteredPorts(filteredPorts);
-    }, [filterStatus]);
+    }, [filterStatus, portDetails]);
 
     return(
-        <div>
-            <div className="d-flex justify-content-between mx-3 mb-2">
-                {["all", "active", "inactive", "unconnected", "faulty"].map((btn, i) => {
+        <div >
+            <h1 className="px-4">
+                <small className="text-body-secondary">Switch {portDetails?.switch_no}</small>
+            </h1>
+            <div className="d-flex col-md-6 col-lg-4 justify-content-between mx-3 py-2 mx-md-5 mb-2">
+                {filterBtn.map((btn, i) => {
                     // Truncate the button text if it's longer than 6 characters
-                    const displayText = btn.length > 6 ? `${btn.slice(0, 6)}..` : btn;
+                    const {text, css} = btn;
+                    const displayText = text.length > 6 ? `${text.slice(0, 6)}..` : text;
                     return (
-                        <button key={i} onClick={() => setFilterStatus(btn)}
-                        className={`${btn === filterStatus ? "active " : ""}btn btn-sm btn-primary text-capitalize`}>
+                        <button key={i} onClick={() => setFilterStatus(text)}
+                        className={`${text === filterStatus ? "active " : ""} btn btn-sm ${css} text-capitalize`}>
                             {displayText}
                         </button>
                     );

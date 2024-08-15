@@ -9,6 +9,7 @@ import PricingDetailsCard from "../PricingDetailsCard";
 import Swal from "sweetalert2";
 import { NewProductDetailsProps } from "../types";
 import { addSwitchApi } from "./apiCalls/postApiCalls";
+import { setCallApi } from "../../../../redux/callApi";
 
 interface AddProductFormProps{
     setShowDetails: (showDetails: string) => void
@@ -22,23 +23,10 @@ const AddSwitchForm: React.FC<AddProductFormProps> = ({ setShowDetails}) =>{
     const dispatch = useDispatch();
 
     const [switchDetails, setSwitchDetails] = useState({
-        switch_no: '', total_ports: "", box_id: "", 
-        description: ""
+        switch_no: '', total_ports: "", box_id: "", description: ""
     })
     // const [pricingDetails, setPricingDetails] = useState({price: '', package_cost: '', package_size: ''});
-    const [selectRows, setSelectRows] = useState(3);
-
-    useEffect(() =>{
-        if(activeShop.shop){
-            const shop_id = activeShop.shop?.shop_id
-            // const apiRes = getProductGroupList(filterNull, shop_id);
-            // apiRes.then(data =>{
-            //     if(data.length){
-            //         dispatch(setGroupList(data))
-            //     }
-            // })       
-        }
-    }, [groupList.length === 0]);
+    const [selectRows, setSelectRows] = useState(3);   
 
     const handleFormInput = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>{
         const name = e.target.name;
@@ -46,20 +34,6 @@ const AddSwitchForm: React.FC<AddProductFormProps> = ({ setShowDetails}) =>{
   
         setSwitchDetails((obj) =>({...obj, [name]: value}))
     }
-    // const handlePricingInput  = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> )=>{
-    //     const name = e.target.name;
-    //     const value = e.target.value;
-
-    //     setPricingDetails((obj) =>({...obj, [name]: value}))
-    // }
-    // const handleImageInput  = (e: React.ChangeEvent<HTMLInputElement> )=>{
-    //     const value = e.target.files;
-    //     if(value){
-    //         setSwitchDetails((obj) =>({...obj, img_path: value[0]}));
-    //     }else{
-    //         setSwitchDetails((obj) =>({...obj, img_path: null}));
-    //     }
-    // }
 
     const handleAddProductSubmit: React.FormEventHandler<HTMLFormElement> = (e) =>{
         e.preventDefault()
@@ -80,6 +54,7 @@ const AddSwitchForm: React.FC<AddProductFormProps> = ({ setShowDetails}) =>{
                 addSwitchApi(data).then((res) =>{
                     if(res.success){
                         setShowDetails("list");
+                        dispatch(setCallApi(true));
                     }
                 }).finally(()=>{
                     setIsLoading(false);
