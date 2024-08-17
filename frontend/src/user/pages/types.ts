@@ -1,5 +1,5 @@
+import { Status } from "../../redux/groupList";
 import { Customer } from "../components/customers/types";
-import { BtnClicksProps, RefundDetailsObj, PoeCalcHandlesProps, Order } from "../sections/pointOfEntry/types";
 
 export interface details{
     icon: JSX.Element;
@@ -49,44 +49,14 @@ export interface paymentProps{
         }[]
 };
 
-export interface mappedPaymentProps{
-    id: number;
-    sale_id: number;
-    sale_date: string;
-    total_price: string;
-    payment_methods: {
-        amount: number;
-        payment_method: "Cash" | "Bank" | "Customer account";
-    }[];
-};
-
-export type PaymentObject = {
-    [key: string]: number;
-};
-
-export type EntryStepTypes = {
-    current: string;
-    prev: string;
-};
-
-export interface CustomerContextType {
-    selectCustomer: Customer | undefined;
-    setSendInvoice: React.Dispatch<React.SetStateAction<boolean>>;
-    sendInvoice: boolean;
-    setEntryStep: React.Dispatch<React.SetStateAction<EntryStepTypes>>;
-};
-
-export interface SalesListContextProps{
-    setEntryStep: React.Dispatch<React.SetStateAction<EntryStepTypes>>;
-    handleNewCustomerOrder: ({date}: {date: string}) => void;
-    showInventoryOrders: string;
-    PoeCalcHandles: PoeCalcHandlesProps | undefined;
-    selectCustomer: Customer | undefined;
-    btnClicks: BtnClicksProps;
-    handleNewOrderSelect: (
-        newOrder: RefundDetailsObj | undefined, 
-        isRefund: boolean, 
-        units?: number
-    ) =>void;
-    setOrdersList: React.Dispatch<React.SetStateAction<Order[]>>;
+export interface ExtractedPortDetailsProps{ 
+    switch_id: number; 
+    box_id: number; 
+    building_name: string; 
+    status: Status; 
+    port_id: number; 
+    description: string; 
+    port_number: number; 
+    switch_no: number
+    client_details: { house_no: string; phone: string; username: string; }; 
 }

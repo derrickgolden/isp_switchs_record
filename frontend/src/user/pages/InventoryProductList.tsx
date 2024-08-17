@@ -7,14 +7,18 @@ import PagesHeader from "../components/sharedComponents/PagesHeader";
 import { Product } from "../components/inventory/types";
 import AddProductForm from "../components/inventory/AddProductForm";
 import Swal from "sweetalert2";
+import PortDetails from "../components/inventory/productGroup/PortDetails";
+import { ExtractedPortDetailsProps } from "./types";
+import { useDispatch } from "react-redux";
 
 const InventoryProductList = () =>{
+    const dispatch = useDispatch();
     const [showDetails, setShowDetails] = useState("list")
-    const [productDetails, setProductDetails] = useState<Product>()
+    const [portDetails, setPortDetails] = useState<ExtractedPortDetailsProps>()
 
-    const handleActionDetails = (row: Product) =>{
-        setProductDetails(row);
-        setShowDetails("details");
+    const handleActionDetails = (row: ExtractedPortDetailsProps) =>{
+        setPortDetails(row);
+        setShowDetails("portdetails");
     }
    
     const handleUpdateStock = (row: Product) =>{
@@ -36,22 +40,23 @@ const InventoryProductList = () =>{
     }
 
     return(
-        <div className='body2 bg-white pb-5' style={{paddingTop: "2rem"}}>
+        <div className='body2 bg-white pb-5'>
             <PagesHeader 
                 setShowDetails ={setShowDetails}
-                btnInfo ={{text: "Add New Product", navigate: "addproduct", details: "product"}}
+                btnInfo ={{text: "Client", navigate: "addproduc", details: "product"}}
             />
             {showDetails === "list" && 
                 <ProductList
                     onHandleActionDetails = {handleActionDetails} 
                     onHandleUpdateStock = {handleUpdateStock}
                 />}
-            {showDetails === "details" && productDetails &&
-                <ProductDetails
-                    onHandleActionDetails = {handleActionDetails}
-                    productDetails = {productDetails}
-                    setShowDetails = {setShowDetails}
-                 />}
+            {showDetails === "portdetails" && 
+                <PortDetails
+                    portDetails={portDetails}
+                    setShowDetails ={setShowDetails}
+                    dispatch = {dispatch}
+                />
+            }
             {showDetails === "addproduct" && 
                 <AddProductForm
                     setShowDetails = {setShowDetails}

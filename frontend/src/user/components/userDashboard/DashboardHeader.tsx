@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 import { MdDashboard } from 'react-icons/md';
 import { FaLayerGroup } from 'react-icons/fa';
 import { server_baseurl } from '../../../baseUrl';
-import { pharmLogo } from '../../../assets/images';
+import { boxImg, pharmLogo, portImg } from '../../../assets/images';
 
 interface DashboardHeaderProps{
     setHeaderToggle: React.Dispatch<React.SetStateAction<boolean>>; 
@@ -56,21 +56,31 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ setHeaderToggle, head
                     className="header_toggle" id="header-toggle">
                     {headerToggle ? <FontAwesomeIcon icon={faX} /> : <FontAwesomeIcon icon={faBars} /> }
                 </div> */}
-                <div className='d-flex text-xl'>
-                    <Link onClick={handleLinkClick} id='dashboard' to="/user/dashboard" className="nav_logo mb-0"> 
+                <div className='d-flex text-xl column-gap-0'>
+                    <Link onClick={handleLinkClick} id='dashboard' to="/user/dashboard" className="nav_logo column-gap-0 px-md-2 px-0 mb-0"> 
                         <img src={logo_url} alt="" className='rounded' 
                             style={{height: "30px", width:"30px"}}
                         />
                         {/* <span className="text-white ">{activeShop?.shop?.shop_name}</span>  */}
                     </Link>
                     <Link onClick={handleLinkClick} id='dashboard' to= "/user/dashboard"
-                        className={`${activeLink === 'dashboard'? 'text-primary font-weight-bold ' :"" }nav_link mb-0`}>
+                        className={`${activeLink === 'dashboard'? 'border-bottom border-primary border-2 ' :"" }nav_link text-dark px-1 px-md-2 column-gap-0 mx-2 mb-0`}>
                         <MdDashboard size={24}/>
                         {/* <span className="nav_name ">Dashboard</span> */}
                     </Link>
                     <Link onClick={handleLinkClick} id='boxes' to="/user/inventory/product-group" 
-                        className={`${activeLink === 'boxes'? 'text-primary font-weight-bold ' :"" }nav_link mb-0`}>
-                        <FaLayerGroup size={24}/>
+                        className={`${activeLink === 'boxes'? 'border-bottom border-primary border-2 ' :"" }nav_link column-gap-0 px-1 px-md-2 mx-2 mb-0`}>
+                        <img src={boxImg} alt="" className='rounded' 
+                            style={{height: "24px", width:"24px"}}
+                        />
+                        {/* <FaLayerGroup size={24}/> */}
+                        {/* <span className="nav_name">Product Groups</span> */}
+                    </Link>
+                    <Link onClick={handleLinkClick} id='ports' to="/user/inventory/product-list" 
+                        className={`${activeLink === 'ports'? 'border-bottom border-primary border-2 ' :"" } nav_link column-gap-0 px-1 px-md-2 mx-2 mb-0`}>
+                        <img src={portImg} alt="" className='rounded' 
+                            style={{height: "24px", width:"24px"}}
+                        />
                         {/* <span className="nav_name">Product Groups</span> */}
                     </Link>
                 </div>
@@ -92,15 +102,21 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ setHeaderToggle, head
                                 dispatch(setActiveShop({shop: data}));
                             }
                             }>
-                                <Link className="dropdown-item" to="#">
+                                <Link className="dropdown-item fw-semibold" to="#">
                                     {data?.shop_name}
                                 </Link>
                             </li>
                         ))
                         }
                         <li>
-                            <Link className="dropdown-item" to="/user/register-shop">
-                                Register Shop
+                            {
+                                shopListDetails.length ? null :
+                                <Link className="dropdown-item" to="/user/register-shop">
+                                    Register Company
+                                </Link>
+                            }
+                            <Link className="dropdown-item" to="/user/change-pass">
+                                Change Password
                             </Link>
                         </li>
                         <li><hr className="dropdown-divider"/></li>

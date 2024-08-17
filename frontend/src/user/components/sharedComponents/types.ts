@@ -1,26 +1,24 @@
 import { BoxDetailsProps, SwitchProps } from "../../../redux/groupList";
-import { ProductDetails } from "../../sections";
-import { Product } from "../inventory/types";
+import { ExtractedPortDetailsProps } from "../../pages/types";
 
 export interface DataTableComponentProps{
-    apidata: Product[] | ProductDetails[], 
+    apidata: ExtractedPortDetailsProps[],
+    search: string | number, 
     columns: ({
         name: string;
-        selector: (row: Product) => number;
+        selector: (row: ExtractedPortDetailsProps) => string;
         sortable: boolean;
         cell?: undefined;
     } | {
         name: string;
-        selector: (row: Product) => string ;
+        selector: (row: ExtractedPortDetailsProps) => number;
         sortable: boolean;
         cell?: undefined;
     } | {
-        name: string;
-        cell: (row: Product) => JSX.Element;
-        selector?: undefined;
-        sortable?: undefined;
-    })[], search: string | number
-  }
+        
+    })[]
+};
+
 export interface DataTableProductGroupProps{
     apidata: BoxDetailsProps[],
     onHandlePortDetails: (row: SwitchProps) => void; 

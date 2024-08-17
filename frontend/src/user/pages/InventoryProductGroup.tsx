@@ -37,7 +37,6 @@ const InventoryProductGroup = () =>{
                 if(showDetails === "portdetails" && portDetails?.switch_id){
                     const newPortDetails = getSwitchById({details: res.details, switchId: portDetails?.switch_id});
                     newPortDetails ? setPortDetails(newPortDetails) : null;
-                    console.log(newPortDetails)
                 }
             });  
         }

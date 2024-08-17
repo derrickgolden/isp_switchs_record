@@ -13,6 +13,9 @@ import shop from "./pharmacy.jpg"
 import pharmLogo from "./logo1.png"
 import user_profile from "./user-profile.png"
 
+import boxImg from "./box.png" 
+import portImg from "./port.jpg" 
+
 export {
     logo,
     left_arrow,
@@ -26,4 +29,6 @@ export {
     shop,
     pharmLogo,
      user_profile,
+    boxImg,
+    portImg,
 }

@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { BoxDetailsProps, SwitchProps, setGroupList } from "../../../../redux/groupList";
+import { useSelector } from "react-redux";
+import { BoxDetailsProps, SwitchProps } from "../../../../redux/groupList";
 import { RootState } from "../../../../redux/store";
 import DataTableProductGroup from "../../sharedComponents/DataTableProductGroup";
-import { getBoxDetailsApi } from "./apiCalls/getApiCalls";
 
 interface  GroupListProps{
     onHandlePortDetails: (row: SwitchProps) => void
@@ -50,11 +49,10 @@ const GroupList: React.FC<GroupListProps> = ({ onHandlePortDetails}) =>{
                         <div className="card" style={{ borderTop: "2px solid #4723d9" }}>
                             <div className="card-header d-flex justify-content-between border-bottom pb-1">
                                 <h4>Box List</h4>
-                                {/* <select value={search} onChange={handleSearchChange}>
-                                    <option value="product_name">Product Name</option>
-                                    <option value="group_name">Product BoxDetailsProps</option>
-                                    <option value="product_id">Product Id</option>
-                                </select> */}
+                                <select value={search} onChange={handleSearchChange}>
+                                    <option value="building_name">Building Name</option>
+                                    <option value="site_location">Site Location</option>
+                                </select>
                             </div>
                             <div className="card-body">
                                 {activeShop.shop ?  

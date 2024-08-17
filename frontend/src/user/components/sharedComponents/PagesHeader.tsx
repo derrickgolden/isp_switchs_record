@@ -33,12 +33,12 @@ const PagesHeader: React.FC<PagesHeaderProps> = ({setShowDetails, btnInfo }) =>{
                         </h1>
                         <FaChevronRight />
                         <h1 className="font-weight-bold fs-4" style={{ fontFamily: 'Poppins', color: '#1D242E' }}>
-                            &nbsp; {btnInfo.details ==="product"? `List of switches(${totals})`:
+                            &nbsp; {btnInfo.details ==="product"? `List of Ports(${totals})`:
                                     btnInfo.details === "group"? `List of Boxes(${totals})` : null}
                         </h1>
                     </div>
                     <p className="font-family-poppins font-weight-400 font-size-14 line-height-21 text-dark">
-                        {btnInfo.details ==="product"? `List of switches.`:
+                        {btnInfo.details ==="product"? `List of ports and clients.`:
                         btnInfo.details === "group"? `List of boxes installed.` : null}
                     </p>
                 </div>

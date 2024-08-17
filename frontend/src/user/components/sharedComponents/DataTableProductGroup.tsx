@@ -16,6 +16,9 @@ const DataTableProductGroup: React.FC<DataTableProductGroupProps> = ({
       if (search == 'building_name') {
         return val.building_name?.toLowerCase().match(datafilter?.toLowerCase())
       }
+      if (search == 'site_location') {
+        return val.site_location?.toLowerCase().match(datafilter?.toLowerCase())
+      }
     })
 
     setFinals(result);

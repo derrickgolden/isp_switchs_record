@@ -1,33 +1,36 @@
 import { useState, useEffect } from 'react'
 import DataTable from 'react-data-table-component'
 import { DataTableComponentProps } from './types'
-import { Product } from '../inventory/types'
+import { ExtractedPortDetailsProps } from '../../pages/types'
 
 const DataTableComponent: React.FC<DataTableComponentProps> = ({ apidata, columns, search }) =>{
-  const [data, setData] = useState(apidata as Product[])
+  const [data, setData] = useState(apidata as ExtractedPortDetailsProps[])
   const [datafilter, setFilter] = useState('')
-  const [datafinals, setFinals] = useState(apidata as Product[])
+  const [datafinals, setFinals] = useState(apidata as ExtractedPortDetailsProps[])
 
   useEffect(() => {
-    let result: Product[] = data?.filter((val ) => {      
-      if (search == 'product_name') {
-        return val.product_name?.toLowerCase().match(datafilter?.toLowerCase())
+    let result: ExtractedPortDetailsProps[] = data?.filter((val ) => {      
+      if (search == 'building') {
+        return val.building_name?.toLowerCase().match(datafilter?.toLowerCase())
       }
-      else if (search == 'group_name') {
-        return val.group_name?.toLowerCase().match(datafilter?.toLowerCase())
+      else if (search == 'house_no') {
+        return val.client_details?.house_no?.toLowerCase().match(datafilter?.toLowerCase())
       }
-      else if (search == 'product_id') {
-        return val.product_id?.toString().match(datafilter?.toString())
+      else if (search == 'client_name') {
+        return val.client_details?.username?.toLowerCase().match(datafilter?.toLowerCase())
       }
-    }) as Product[]
+      else if (search == 'phone') {
+        return val.client_details?.phone?.toLowerCase().match(datafilter?.toLowerCase())
+      }
+    }) as ExtractedPortDetailsProps[]
 
     setFinals(result)
 
   }, [datafilter])
 
   useEffect(() => {
-    setFinals(apidata as Product[])
-    setData(apidata as Product[])
+    setFinals(apidata as ExtractedPortDetailsProps[])
+    setData(apidata as ExtractedPortDetailsProps[])
   }, [apidata])
 
 
