@@ -1,51 +1,39 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
-import { ForgotPassword, Login, ResetPassword, Signup } from './user/components/auth';
-import { Inventory, InventoryProductGroup, InventoryProductList, 
-  PaymentReport, SalesReport, UserDashboard } from './user/pages';
-import { ALogin } from './admin/components';
-import LandingPageHeader from './user/sections/LandingPageHeader';
-import RegisterShop from './user/sections/shop/RegisterShop';
-import SummaryDetails from './user/components/inventory/SummaryDetails';
-import ChangePassword from './user/components/auth/ChangePassword';
-import { useEffect } from 'react';
+import { ForgotPassword, Login, ResetPassword, Signup } from './isp/components/auth';
+import { BoxesGroup, PortClientDetails, IspDashboard } from './isp/pages';
+import LandingPageHeader from './isp/sections/LandingPageHeader';
+import RegisterISP from './isp/sections/isp/RegisterISP';
+import ChangePassword from './isp/components/auth/ChangePassword';
 
 function App() {
-  useEffect(() =>{
-
-  }, []);
   return (
     <>
       <div>
         <Routes>
-          <Route path='/user' element={<LandingPageHeader />}>
-            <Route path='dashboard' element={<UserDashboard />} />
-            <Route path='dashboard/details' element={<SummaryDetails />} />
-            <Route path='register-shop' element={<RegisterShop />} />
+          <Route path='/isp' element={<LandingPageHeader />}>
+            <Route path='dashboard' element={<IspDashboard />} />
+            <Route path='register-isp' element={<RegisterISP />} />
             <Route path='change-pass' element={<ChangePassword />} />
-            <Route path='inventory'>
+            <Route path='port-details' element={<PortClientDetails />}/>
+            <Route path='boxes' element={<BoxesGroup />}/>
+            {/* <Route path='inventory'>
               <Route index element={< Inventory />} />
-              <Route path='product-list' element={<InventoryProductList />}/>
-              <Route path='product-group' element={<InventoryProductGroup />}/>
-            </Route>
-            <Route path='report'>
+            </Route> */}
+            {/* <Route path='report'>
               <Route path='sales' element={<SalesReport />}/>
               <Route path='payments' element={<PaymentReport />}/>
-            </Route>
+            </Route> */}
           </Route>
 
           <Route path='/:urltoken' element={<Login />} />
           <Route path='/' element={<Login />} />
-          <Route path='/user' >
+          <Route path='/isp' >
             <Route path="login/:urltoken" element={<Login />} />
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
             <Route path="reset-password/:urltoken" element={<ResetPassword />} />
             <Route path="forgot-password" element={<ForgotPassword />} />
-            {/* <Route path='sales-entry' element={<SalesEntry />} /> */}
-          </Route>
-          <Route path='/admin'>
-            <Route path="login" element={<ALogin />} />
           </Route>
         </Routes>
       </div>     

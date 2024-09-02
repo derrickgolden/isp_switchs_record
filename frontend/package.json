@@ -43,6 +43,7 @@
     "sweetalert2": "^11.10.1"
   },
   "devDependencies": {
+    "@types/bootstrap": "^5.2.10",
     "@types/papaparse": "^5.3.14",
     "@types/react": "^18.2.45",
     "@types/react-csv": "^1.1.10",

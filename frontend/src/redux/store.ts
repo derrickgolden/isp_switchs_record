@@ -3,10 +3,10 @@ import userDetailsReducer from './userDetails'
 import callApiReducer from './callApi'
 import groupListReducer from './groupList'
 import productListReducer from './productList'
-import shopListDetailsReducer from './shopListDetails'
+import shopListDetailsReducer from './ispListDetails'
 import salesReportReducer from './salesReport'
 import rerenderReducer from './rerender'
-import activeShopReducer from './activeShop'
+import activeShopReducer from './activeISP'
 import paymentDetailsReducer from './paymentDetails'
 
 export const store = configureStore({
