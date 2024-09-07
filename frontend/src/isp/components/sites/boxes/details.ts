@@ -14,8 +14,15 @@ export const options = [
 
 export const filterBtn = [
   {text: "all", css: "btn-primary"}, 
-  {text: "active", css: "btn-info"}, 
-  {text: "inactive", css: "btn-success"}, 
+  {text: "active", css: "btn-success"}, 
+  {text: "inactive", css: "btn-info"}, 
   {text: "unconnected", css: "btn-warning"}, 
   {text: "faulty", css: "btn-danger"}
 ];
+
+export const stateColors = {
+  active: "text-success",
+  unconnected: "text-warning",
+  inactive: "text-info",
+  faulty: "text-danger"
+}

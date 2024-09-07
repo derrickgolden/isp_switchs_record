@@ -9,6 +9,7 @@ export interface PortTypes {
   description: string,
   port_number: number,
   client_details: {
+    client_id: number;
     house_no: string;
     phone: string;
     username: string;

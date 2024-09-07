@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProduct = exports.getProductList = exports.updatePort = void 0;
+exports.deleteProduct = exports.getProductList = exports.relocateClient = exports.updatePort = void 0;
 const { pool } = require("../../../mysqlSetup");
 ;
 const updatePort = async (portDetails) => {
@@ -49,6 +49,53 @@ const updatePort = async (portDetails) => {
     }
 };
 exports.updatePort = updatePort;
+const relocateClient = async (portDetails) => {
+    const { status, pre_port_id, port_id, port_number, description, clientDetails } = portDetails;
+    const { house_no, phone, username, client_id } = clientDetails;
+    const connection = await pool.getConnection();
+    try {
+        await connection.beginTransaction();
+        var [products] = await connection.query(`
+                UPDATE port_details
+                SET status = ?, description = ?
+                WHERE port_id = ?
+            `, ["active", description, port_id]);
+        const desc = `${username} relocated on ${new Date().toDateString()}`;
+        var [port] = await connection.query(`
+                UPDATE port_details
+                SET status = ?, description = ?
+                WHERE port_id = ?
+            `, ["unconnected", desc, pre_port_id]);
+        var [resp] = await connection.query(`
+                UPDATE client_details
+                SET port_id = NULL 
+                WHERE port_id = ?
+            `, [port_id]);
+        var [resp] = await connection.query(`
+                UPDATE client_details
+                SET port_id = ?, house_no = ? 
+                WHERE client_id = ?
+            `, [port_id, house_no, client_id]);
+        await connection.commit();
+        return {
+            success: true,
+            msg: `Port ${port_number} has been updated successfully`,
+            details: []
+        };
+    }
+    catch (error) {
+        await connection.rollback(); // Rollback transaction in case of error
+        console.error('Error during relocation:', error.message);
+        return {
+            success: false,
+            msg: error.sqlMessage || error.message
+        };
+    }
+    finally {
+        connection.release();
+    }
+};
+exports.relocateClient = relocateClient;
 const getProductList = async (details) => {
     const { shop_id } = details;
     const connection = await pool.getConnection();
@@ -124,6 +171,7 @@ const deleteProduct = async (product_id) => {
 exports.deleteProduct = deleteProduct;
 module.exports = {
     updatePort: exports.updatePort,
+    relocateClient: exports.relocateClient,
     getProductList: exports.getProductList,
     deleteProduct: exports.deleteProduct,
 };

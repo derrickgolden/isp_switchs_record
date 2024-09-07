@@ -11,6 +11,9 @@ interface ResponseData {
 export const updatePortApi = async (data: string, navigate: NavigateFunction): Promise<ResponseData> =>{
     return await makeApiCall('user/switch/update-port', 'patch', data, navigate);
 };
+export const relocateClientApi = async (data: string, navigate: NavigateFunction): Promise<ResponseData> =>{
+    return await makeApiCall('user/switch/relocate-client', 'patch', data, navigate);
+};
 
 const makeApiCall = async(url: string, method: string, data: string, navigate: NavigateFunction) =>{
     const tokenString = sessionStorage.getItem("userToken");

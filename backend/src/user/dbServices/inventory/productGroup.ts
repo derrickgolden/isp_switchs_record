@@ -168,11 +168,13 @@ export const getBoxDetails = async ( shop_id: number): Promise<universalResponse
                                         'description', pd.description,
                                         'client_details', IFNULL(
                                             JSON_OBJECT(
+                                                'client_id', cd.client_id,
                                                 'username', cd.username,
                                                 'house_no', cd.house_no,
                                                 'phone', cd.phone
                                             ), 
                                             JSON_OBJECT(
+                                                'client_id', NULL,
                                                 'username', NULL,
                                                 'house_no', NULL,
                                                 'phone', NULL

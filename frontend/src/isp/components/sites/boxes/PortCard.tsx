@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import { FaRegEdit } from "react-icons/fa";
-import { useState, useEffect, Dispatch, useRef } from "react";
-import { PortTypes, Status } from "../../../../redux/groupList";
-import { updatePortApi } from "./apiCalls/updateApiCalls";
-import { setCallApi } from "../../../../redux/callApi";
+import { MdOutlineMoveUp } from "react-icons/md";
+import { useState, Dispatch, useRef } from "react";
+import { PortTypes } from "../../../../redux/groupList";
 import { AnyAction } from "@reduxjs/toolkit";
-import { customCardStyle, options } from "./details";
+import { customCardStyle } from "./details";
 import UpdatePortModal from "../../sharedComponents/UpdatePortModal";
+import RelocateClientForm from "../../sharedComponents/RelocateClientModal";
+import { Modal } from "bootstrap";
 
 interface PortCardProps {
   id: number;
@@ -17,10 +18,21 @@ interface PortCardProps {
 
 // trueHost@123456!
 const PortCard: React.FC<PortCardProps> = ({id, port, refs, dispatch }) => {
+  const relocateModalRef = useRef<HTMLDivElement | null>(null);
+
   const { description, port_id, port_number, status, client_details } = port;
-  const { house_no, phone, username } = client_details;
+  const { house_no, phone, username, client_id } = client_details;
 
   const [currentPortId, setCurrentPortId] = useState(port_id);
+
+  const handleRelocateClick = (port_id: number) =>{
+    setCurrentPortId(port_id);
+    // if (relocateModalRef.current) {
+    //   const relocateModal = new Modal(relocateModalRef.current);
+    //   relocateModal.show();
+    // }
+  }
+  // console.log(currentPortId);
 
   return (
     <div
@@ -61,20 +73,20 @@ const PortCard: React.FC<PortCardProps> = ({id, port, refs, dispatch }) => {
           </p>
         </div>
       </div>
-      <div
-        onClick={() => {
-          setCurrentPortId(port_id);
-        }}
-        data-bs-toggle="modal"
-        data-bs-target={`#modal${port_id}`}
-        className={`bg-white d-flex justify-content-around align-items-center card-footer rounded-bottom `}
-        style={{ cursor: "pointer" }}
+      <div 
+        className={`bg-white d-flex justify-content-between align-items-center card-footer rounded-bottom `}
       >
-        <Link to="#" className="text-poppins-regular">
-          PortID: {port_id}
-        </Link>
-        <span className="text-info d-flex align-items-center gap-2">
-          Edit <FaRegEdit />
+        <button disabled={client_id? false: true} data-bs-toggle="modal"
+          data-bs-target={`#modalRelocate${port_id}`}
+          className="btn py-0 border-0 text-poppins-regular text-danger-emphasis"
+            onClick={() => handleRelocateClick(port_id)}>
+            Relocate <MdOutlineMoveUp />
+        </button>
+        <span data-bs-toggle="modal"
+          data-bs-target={`#modal${port_id}`}
+          className="btn py-0 text-info d-flex align-items-center gap-2" 
+            onClick={() => {setCurrentPortId(port_id);}} >
+              Edit <FaRegEdit />
         </span>
       </div>
 
@@ -84,6 +96,14 @@ const PortCard: React.FC<PortCardProps> = ({id, port, refs, dispatch }) => {
         dispatch={dispatch}
         currentPortId = {currentPortId} 
         setCurrentPortId = {setCurrentPortId}
+      />  
+      <RelocateClientForm 
+        port={port}
+        id={id}
+        dispatch={dispatch}
+        currentPortId = {currentPortId} 
+        setCurrentPortId = {setCurrentPortId}
+        relocateModalRef={relocateModalRef}
       />  
     </div>
   );

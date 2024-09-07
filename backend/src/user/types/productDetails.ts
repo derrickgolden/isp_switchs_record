@@ -16,10 +16,12 @@ export interface productDetailsProp{
 }
 export interface UpdatePortProps{
     status: string; 
-    port_id: number; 
+    port_id: number;
+    pre_port_id: number; 
     port_number: number;
     description: string;
     clientDetails: {
+        client_id: number;
         username: string;
         phone: string;
         house_no: string;

@@ -13,6 +13,7 @@ import { RootState } from "../../redux/store";
 import { getSwitchById } from "./calculations/getSwitchById";
 import ChangePassword from "../components/auth/ChangePassword";
 import { useNavigate } from "react-router-dom";
+import { getCurrentBox } from "../components/sharedComponents/mappingBoxes";
 
 const BoxesGroup = () =>{
     const dispatch = useDispatch();
@@ -21,10 +22,14 @@ const BoxesGroup = () =>{
     const [portDetails, setPortDetails] = useState<SwitchProps>();
     const activeShop = useSelector((state: RootState) => state.activeShop);
     const callApi = useSelector((state: RootState) => state.callApi);
+    const groupList = useSelector((state: RootState) => state.groupList);
+    const [expandedRows, setExpandedRows] = useState<number[]>([]);
 
     const onHandlePortDetails = (row: SwitchProps) =>{
         setShowDetails("portdetails");
         setPortDetails(row);
+        const currentBox = getCurrentBox(groupList, row.ports[0].port_id);
+        currentBox.box? setExpandedRows([currentBox.box?.box_id]): null;
     };
 
     useEffect(() =>{
@@ -54,6 +59,7 @@ const BoxesGroup = () =>{
             {showDetails === "list" && 
                 <GroupList 
                     onHandlePortDetails = {onHandlePortDetails}
+                    expandedRows = {expandedRows}
                 />
             }
             {showDetails === "addgroup" && 

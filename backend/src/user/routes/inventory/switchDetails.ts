@@ -1,6 +1,6 @@
 import express, {Request, Response} from 'express';
 import { universalResponse } from 'user/types/universalResponse';
-import { updatePort, deleteProduct, getProductList } from '../../dbServices/inventory/productList';
+import { updatePort, deleteProduct, getProductList, relocateClient } from '../../dbServices/inventory/productList';
 
 const router = express.Router();
 
@@ -9,6 +9,21 @@ router.patch('/update-port', async(req: Request, res: Response) =>{
 
     try {
         const response:universalResponse = await updatePort(body)
+        response.success ? 
+            res.status(200).json(response):
+            res.status(302).json(response);
+        
+    } catch (error) {
+        console.log(error)
+        res.status(302).json({success: false, msg: "sever side error", err: error.message})
+    }
+});
+
+router.patch('/relocate-client', async(req: Request, res: Response) =>{
+    const body = req.body;
+
+    try {
+        const response:universalResponse = await relocateClient(body)
         response.success ? 
             res.status(200).json(response):
             res.status(302).json(response);

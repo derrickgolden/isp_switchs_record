@@ -77,7 +77,7 @@ const AddCustomerForm = () => {
                 </div>
                 <div className="d-md-flex flex-wrap justify-content-between">
                     <div className="form-floating mb-3 col-12 col-md-5">
-                             <select
+                        <select
                              style={{ width: "100%" }}
                              onChange={handleInputChange}
                              name="country"
@@ -91,8 +91,8 @@ const AddCustomerForm = () => {
                                  {countries[code].name}
                                  </option>
                              ))}
-                             </select>
-                             <label className="ml-2" htmlFor="floatingCountry">Country</label>
+                        </select>
+                        <label className="ml-2" htmlFor="floatingCountry">Country</label>
                     </div>
                     <div className="form-floating mb-3 col-12 col-md-6">
                          <input

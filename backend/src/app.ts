@@ -11,8 +11,6 @@ require('dotenv').config();
 import adminauth from './user/routes/auth'
 import siteDetails from './user/routes/inventory/productGroup'
 import switchDetails from './user/routes/inventory/switchDetails'
-import sales from './user/routes/sales/registerSales'
-import report from './user/routes/sales/getSalesReport'
 import shop from './user/routes/shop'
 import stock from './user/routes/stock'
 import paymentMethodSales from './user/routes/payments/getPayMethodsReport'

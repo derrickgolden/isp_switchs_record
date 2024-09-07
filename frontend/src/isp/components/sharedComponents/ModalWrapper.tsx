@@ -14,13 +14,14 @@ interface ModalWrapperProps{
     isLoading: boolean;
     children: ReactNode;
     submitHandle: (e: React.FormEvent<HTMLFormElement>) => void;
+    manualClickRef?: React.MutableRefObject<(HTMLDivElement | null)>
 };
 
 const ModalWrapper: React.FC<ModalWrapperProps> = (props) => {
-    const {targetId, title, btnDetails, isLoading, submitHandle} = props;
+    const {targetId, title, btnDetails, isLoading, submitHandle, manualClickRef} = props;
 
     return(
-        <div className="modal fade" id={targetId} tabIndex={-1} aria-labelledby={`${targetId}Label`} aria-hidden="true">
+        <div ref={manualClickRef} className="modal fade" id={targetId} tabIndex={-1} aria-labelledby={`${targetId}Label`} aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content ">
                 <div className="modal-header">

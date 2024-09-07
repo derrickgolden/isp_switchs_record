@@ -7,15 +7,16 @@ import DataTableProductGroup from "../../sharedComponents/DataTableProductGroup"
 
 interface  GroupListProps{
     onHandlePortDetails: (row: SwitchProps) => void
+    expandedRows: number[];
   }
 
-const GroupList: React.FC<GroupListProps> = ({ onHandlePortDetails}) =>{
+const GroupList: React.FC<GroupListProps> = ({ onHandlePortDetails, expandedRows}) =>{
     const [search, setSearch] = useState('group_name');
     const [searchType, setSearchType] = useState('building_name');
     
     const groupList = useSelector((state: RootState) => state.groupList);
     const activeShop = useSelector((state: RootState) => state.activeShop);
-    // console.log(groupList)
+
     const columns = [
         {
             name: "Building Name",
@@ -61,6 +62,7 @@ const GroupList: React.FC<GroupListProps> = ({ onHandlePortDetails}) =>{
                                         apidata={groupList} 
                                         columns={columns} 
                                         onHandlePortDetails ={onHandlePortDetails}
+                                        expandedRows = {expandedRows}
                                     />  :
                                     <h2>Select a box first.</h2>
                                 }           

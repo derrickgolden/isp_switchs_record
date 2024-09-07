@@ -1,15 +1,11 @@
-import React, { useEffect, useState, CSSProperties } from "react";
+import React, { useState } from "react";
 import BeatLoader from "react-spinners/BeatLoader";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../../redux/store";
-import { addProductApi } from "../apiCalls/addProductApi";
-// import { getProductGroupList } from "./productGroup/apiCalls/getProductGroupList";
-import { setGroupList } from "../../../../redux/groupList";
-import PricingDetailsCard from "../PricingDetailsCard";
 import Swal from "sweetalert2";
-import { NewProductDetailsProps } from "../types";
 import { addSwitchApi } from "../boxes/apiCalls/postApiCalls";
 import { setCallApi } from "../../../../redux/callApi";
+import { useNavigate } from "react-router-dom";
 
 interface AddProductFormProps{
     setShowDetails: (showDetails: string) => void
@@ -21,6 +17,7 @@ const AddSwitchForm: React.FC<AddProductFormProps> = ({ setShowDetails}) =>{
     const activeShop = useSelector((state: RootState) => state.activeShop);
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [switchDetails, setSwitchDetails] = useState({
         switch_no: '', total_ports: "", box_id: "", description: ""
@@ -51,7 +48,7 @@ const AddSwitchForm: React.FC<AddProductFormProps> = ({ setShowDetails}) =>{
             
             if( activeShop.shop ){
                 setIsLoading(true);
-                addSwitchApi(data).then((res) =>{
+                addSwitchApi(data, navigate).then((res) =>{
                     if(res.success){
                         setShowDetails("list");
                         dispatch(setCallApi(true));

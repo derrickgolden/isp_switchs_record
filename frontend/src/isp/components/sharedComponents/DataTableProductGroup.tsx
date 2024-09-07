@@ -4,11 +4,11 @@ import { DataTableProductGroupProps } from './types'
 import { BoxDetailsProps, SwitchProps } from '../../../redux/groupList'
 
 const DataTableProductGroup: React.FC<DataTableProductGroupProps> = ({ 
-  apidata, columns, search, onHandlePortDetails
+  apidata, columns, search, onHandlePortDetails, expandedRows
  }) =>{
-  const [data, setData] = useState(apidata)
-  const [datafilter, setFilter] = useState('')
-  const [datafinals, setFinals] = useState(apidata)
+  const [data, setData] = useState(apidata);
+  const [datafilter, setFilter] = useState('');
+  const [datafinals, setFinals] = useState(apidata);
 
   // console.log(apidata)
   useEffect(() => {
@@ -54,6 +54,7 @@ const DataTableProductGroup: React.FC<DataTableProductGroupProps> = ({
                     columns={subColumns}
                     data={data.switches}
                     highlightOnHover
+                    striped
                 />
             </div>
                 :
@@ -62,8 +63,7 @@ const DataTableProductGroup: React.FC<DataTableProductGroupProps> = ({
             </div>
         </div>          
     );
-};
-
+  };
 
   return (
     <>
@@ -78,9 +78,11 @@ const DataTableProductGroup: React.FC<DataTableProductGroupProps> = ({
           responsive
           subHeader
           noHeader
+          striped
           expandableRows
           expandOnRowClicked
           expandableRowsComponent={ExpandedComponent}
+          expandableRowExpanded={row => expandedRows.includes(row.box_id)}
           subHeaderComponent={
             <div className="row justify-content-start">
               <div className="col-12">

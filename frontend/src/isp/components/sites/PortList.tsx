@@ -13,6 +13,7 @@ import { BoxDetailsProps, setGroupList } from "../../../redux/groupList";
 import { ExtractedPortDetailsProps } from "../../pages/types";
 import { getBoxDetailsApi } from "./boxes/apiCalls/getApiCalls";
 import { useNavigate } from "react-router-dom";
+import { stateColors } from "./boxes/details";
 
 const PortList: React.FC<PortListProps> = ({onHandleActionDetails}) =>{
     const [search, setSearch] = useState('client_name');
@@ -47,7 +48,8 @@ const PortList: React.FC<PortListProps> = ({onHandleActionDetails}) =>{
         },
         {
             name: "Status",
-            selector: (row: ExtractedPortDetailsProps) => row.status,
+            selector: (row: ExtractedPortDetailsProps) => <>
+                <span className={`${stateColors[row.status]}`}>{row.status}</span></>,
             sortable: true
         },
         {

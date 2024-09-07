@@ -1,28 +1,38 @@
 import { useEffect, useRef, useState } from "react";
 import ModalWrapper from "./ModalWrapper"
 import { updatePortApi } from "../sites/boxes/apiCalls/updateApiCalls";
-import { Status } from "../../../redux/groupList";
+import { BoxDetailsProps, Status } from "../../../redux/groupList";
 import { setCallApi } from "../../../redux/callApi";
 import { options } from "../sites/boxes/details";
 import { UpdatePortModalProps } from "./types";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
+import { getCurrentBox } from "./mappingBoxes";
 
 const UpdatePortModal: React.FC<UpdatePortModalProps> = ({port, id, dispatch, currentPortId, setCurrentPortId}) =>{
 // console.log(port)
     const { description, port_id, port_number, status, client_details } = port;
     const { house_no, phone, username } = client_details;
-    // console.log(port);
+    const navigate = useNavigate();
   
     const [selectedValue, setSelectedValue] = useState(status);
     const [newDescription, setNewDescription] = useState(description || "");
-    const [clientDetails, setClientDetails] = useState({username, phone, house_no})
+    const [clientDetails, setClientDetails] = useState({username, phone, house_no});
+    const [currentBox, setCurrentBox] = useState({switch_no: 0, building: ""})
     const [isLoading, setIsLoading] = useState(false);
     const btnClose = useRef<HTMLButtonElement>(null);
+    const groupList = useSelector((state: RootState) => state.groupList);
   
     useEffect(() => {
       setSelectedValue(status);
       setCurrentPortId(port_id);
       setNewDescription(description || "");
       setClientDetails({username, phone, house_no});
+
+      const selectedBox = getCurrentBox(groupList, port_id);
+      setCurrentBox(selectedBox);
+      // console.log(port)
     }, [status, port_id, description]);
     
   const handleStatus = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,7 +55,7 @@ const UpdatePortModal: React.FC<UpdatePortModalProps> = ({port, id, dispatch, cu
           status: selectedValue, port_id: currentPortId, description: newDescription, port_number, clientDetails
         });
         setIsLoading(true);
-        updatePortApi(data).then((res) =>{
+        updatePortApi(data, navigate).then((res) =>{
             if(res.success){
               if (btnClose.current) {
                 btnClose.current.click();
@@ -60,7 +70,7 @@ const UpdatePortModal: React.FC<UpdatePortModalProps> = ({port, id, dispatch, cu
     return(
         <ModalWrapper
             targetId={`modal${port_id}`}
-            title = {`Port ${port_number}`}
+            title = {`Port ${port_number}, Switch ${currentBox.switch_no}(${currentBox.building})`}
             btnDetails={{
                 confirmText: "Save Changes", 
                 confirmColor: "btn-primary", 

@@ -40,7 +40,8 @@ export interface DataTableProductGroupProps{
         selector?: undefined;
         sortable?: undefined;
     })[], 
-    search: string | number
+    search: string | number,
+    expandedRows: number[]
   }
 
 export interface UpdatePortModalProps{
@@ -49,4 +50,22 @@ export interface UpdatePortModalProps{
     setCurrentPortId: React.Dispatch<React.SetStateAction<number>>;
     dispatch: Dispatch<AnyAction>; 
     currentPortId: number; 
+    relocateModalRef?: React.MutableRefObject<(HTMLDivElement | null)>
+};
+
+export interface MappedBoxDetails{
+    site: {site_id: number, site_location: string}[],
+    box: { box_id: number, building_name: string }[], 
+    switches: SwitchProps[], 
+    ports: PortTypes[]
+}
+
+export interface RelocateDetailsProps {
+    site_id: number;
+    box_id: number;
+    switch_no: number;
+    switch_id: number;
+    port_id: number;
+    house_no: string;
+    description: string;
 }

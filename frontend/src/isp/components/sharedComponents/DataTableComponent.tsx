@@ -33,8 +33,6 @@ const DataTableComponent: React.FC<DataTableComponentProps> = ({ apidata, column
     setData(apidata as ExtractedPortDetailsProps[])
   }, [apidata])
 
-
-
   return (
     <>
 
@@ -45,6 +43,7 @@ const DataTableComponent: React.FC<DataTableComponentProps> = ({ apidata, column
           pagination
           fixedHeader
           highlightOnHover
+          striped
           responsive
           subHeader
           noHeader

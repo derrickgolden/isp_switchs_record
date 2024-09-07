@@ -19,6 +19,19 @@ router.patch('/update-port', async (req, res) => {
         res.status(302).json({ success: false, msg: "sever side error", err: error.message });
     }
 });
+router.patch('/relocate-client', async (req, res) => {
+    const body = req.body;
+    try {
+        const response = await (0, productList_1.relocateClient)(body);
+        response.success ?
+            res.status(200).json(response) :
+            res.status(302).json(response);
+    }
+    catch (error) {
+        console.log(error);
+        res.status(302).json({ success: false, msg: "sever side error", err: error.message });
+    }
+});
 router.post('/get-product', async (req, res) => {
     const body = req.body;
     try {

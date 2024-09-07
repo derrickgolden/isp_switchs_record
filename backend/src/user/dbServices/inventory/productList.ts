@@ -61,6 +61,60 @@ export const updatePort = async (portDetails: UpdatePortProps ): Promise<univers
         }
     }
 };
+export const relocateClient = async (portDetails: UpdatePortProps ): Promise<universalResponse> => {
+
+    const { status, pre_port_id, port_id, port_number, description, clientDetails } = portDetails;
+    const { house_no, phone, username, client_id } = clientDetails;
+    
+    const connection: RowDataPacket = await pool.getConnection();
+    try {
+
+        await connection.beginTransaction();
+
+            var [products]: [Product[]] = await connection.query(`
+                UPDATE port_details
+                SET status = ?, description = ?
+                WHERE port_id = ?
+            `, ["active", description, port_id]);
+
+            const desc = `${username} relocated on ${new Date().toDateString()}`
+            var [port]: [Product[]] = await connection.query(`
+                UPDATE port_details
+                SET status = ?, description = ?
+                WHERE port_id = ?
+            `, ["unconnected", desc, pre_port_id]);
+            
+            var [ resp ] = await connection.query(`
+                UPDATE client_details
+                SET port_id = NULL 
+                WHERE port_id = ?
+            `, [port_id]);
+
+            var [ resp ] = await connection.query(`
+                UPDATE client_details
+                SET port_id = ?, house_no = ? 
+                WHERE client_id = ?
+            `, [port_id, house_no, client_id]);
+
+        await connection.commit();
+
+        return {
+            success: true,
+            msg: `Port ${port_number} has been updated successfully`,
+            details: []
+        };
+    } catch (error) {
+        await connection.rollback(); // Rollback transaction in case of error
+        console.error('Error during relocation:', error.message);
+        
+        return {
+            success: false,
+            msg: error.sqlMessage || error.message
+        };
+    } finally{
+        connection.release();
+    }
+};
 
 export const getProductList = async ( details: GetProductListProps ): Promise<universalResponse> => {    
     const {shop_id} = details;
@@ -142,6 +196,7 @@ export const deleteProduct = async (product_id: number ): Promise<universalRespo
 
 module.exports = {
     updatePort,
+    relocateClient,
     getProductList,
     deleteProduct,
 }
