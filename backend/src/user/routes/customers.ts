@@ -17,7 +17,7 @@ router.post('/add-customer', async(req: Request, res: Response) =>{
             res.status(302).json(response);
         
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(302).json({success: false, msg: "sever side error", err: error.message})
     }
 });
@@ -32,7 +32,7 @@ router.post('/get-list', async(req: Request, res: Response) =>{
             res.status(302).json(response);
         
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(302).json({success: false, msg: "sever side error", err: error.message})
     }
 });
@@ -47,7 +47,7 @@ router.patch('/edit-details', async(req: Request, res: Response) =>{
             res.status(302).json(response)
         
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(302).json({success: false, msg: "sever side error", err: error.message})
     }
 });

@@ -52,6 +52,15 @@ export interface UpdatePortModalProps{
     currentPortId: number; 
     relocateModalRef?: React.MutableRefObject<(HTMLDivElement | null)>
 };
+export interface RelocateClientProps{
+    port: PortTypes, 
+    dispatch: Dispatch<AnyAction>; 
+    openModal: {render: boolean, open: boolean}
+    setOpenRelocateModal: React.Dispatch<React.SetStateAction<{
+        render: boolean;
+        open: boolean;
+    }>>;
+};
 
 export interface MappedBoxDetails{
     site: {site_id: number, site_location: string}[],

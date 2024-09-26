@@ -1,4 +1,4 @@
-import express, {Request, Response} from 'express';
+import express from 'express';
 import cors from 'cors';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
@@ -9,14 +9,15 @@ import fs from 'fs';
 require('dotenv').config();
 
 import adminauth from './user/routes/auth'
-import siteDetails from './user/routes/inventory/productGroup'
-import switchDetails from './user/routes/inventory/switchDetails'
+import siteDetails from './user/routes/isp/siteDetails'
+import switchDetails from './user/routes/isp/switchDetails'
 import shop from './user/routes/shop'
 import stock from './user/routes/stock'
 import paymentMethodSales from './user/routes/payments/getPayMethodsReport'
 import paymentDetails from './user/routes/payments/paymentDetails'
 import customer from './user/routes/customers';
 import invoices from './user/routes/invoices'
+import killProcess from "./user/routes/processKill"
 
 const storage = multer.diskStorage({
     destination: (req, file, callback) => {
@@ -46,12 +47,6 @@ app.use(cors({
   allowedHeaders: 'Content-Type,Authorization'
 }))
 
-// app.use((req, res, next) => {
-//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
-//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-//   next();
-// });
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 app.use(compression())
@@ -62,9 +57,7 @@ const port = process.env.SEVERPORT || 8080
 app.use("/js", express.static(path.join(__dirname, 'dist', 'assets', 'index-TSNK7VKS.js')));
 app.use(express.static(path.join(__dirname, 'dist')));
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
+app.use("/process", killProcess);
 
 app.use("/user", adminauth);
 app.use("/hello", (req, res) => {res.send("Hello") });

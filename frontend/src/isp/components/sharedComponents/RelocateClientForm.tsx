@@ -2,15 +2,18 @@ import { useEffect, useRef, useState } from "react";
 import ModalWrapper from "./ModalWrapper"
 import { relocateClientApi,  } from "../sites/boxes/apiCalls/updateApiCalls";
 import { setCallApi } from "../../../redux/callApi";
-import { MappedBoxDetails, UpdatePortModalProps } from "./types";
+import { MappedBoxDetails, RelocateClientProps } from "./types";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { getCurrentBox, mapOnSelectedIds } from "./mappingBoxes";
+import ManualModalWrapper from "./ManualModalWrapper";
 
-const RelocateClientForm: React.FC<UpdatePortModalProps> = ({port, id, dispatch, relocateModalRef}) =>{
+const RelocateClientForm: React.FC<RelocateClientProps> = ({port, dispatch, openModal, setOpenRelocateModal}) =>{
     const { description, port_id, port_number, status, client_details } = port;
     const { username, house_no, client_id } = client_details;
+    // console.log(port)
+
     const navigate = useNavigate();
     const groupList = useSelector((state: RootState) => state.groupList);
   
@@ -27,7 +30,9 @@ const RelocateClientForm: React.FC<UpdatePortModalProps> = ({port, id, dispatch,
             const { box, switch_no, switch_id } = selectedBox;
             const { site_id, box_id } = box;
 
-            setRelocateDetails({site_id, box_id, switch_no, switch_id, port_id, pre_port_id: port_id, house_no, description, client_id});
+            setRelocateDetails({site_id, box_id, switch_no, switch_id, port_id, 
+                pre_port_id: port_id, house_no, description, client_id
+            });
         }
     }, [status, port_id, description, port]);
 
@@ -38,8 +43,8 @@ const RelocateClientForm: React.FC<UpdatePortModalProps> = ({port, id, dispatch,
     }, [relocateDetails.site_id, relocateDetails.box_id, relocateDetails.switch_id]);
     
     const handleRelocateDetails = (e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement | HTMLInputElement>) =>{
-        const name = e.target.id
-        const value = e.target.value
+        const name = e.target.id;
+        const value = e.target.value;
         setRelocateDetails((obj) => ({...obj, [name]: value}));
     };
 
@@ -55,24 +60,21 @@ const RelocateClientForm: React.FC<UpdatePortModalProps> = ({port, id, dispatch,
             setIsLoading(true);
             relocateClientApi(data, navigate).then((res) =>{
                 if(res.success){
-                  if (btnClose.current) {
-                    btnClose.current.click();
-                  }
+                  setOpenRelocateModal({render: true, open: false});
                   dispatch(setCallApi(true));
                 }
             }).finally(()=>{
               setIsLoading(false);
             });
         }else{
-            alert("Select port number")
+            alert("Select port number");
         }
     };
 
     return(
-        <ModalWrapper
+        <ManualModalWrapper
             targetId={`modalRelocate${port_id}`}
             title = {`Port ${port_number}`}
-            manualClickRef = {relocateModalRef}
             btnDetails={{
                 confirmText: "Save Changes", 
                 confirmColor: "btn-primary", 
@@ -81,6 +83,7 @@ const RelocateClientForm: React.FC<UpdatePortModalProps> = ({port, id, dispatch,
             }}
             isLoading = {isLoading}
             submitHandle={relocateClient}
+            openModal={openModal}
         >
             <div className="d-flex flex-wrap text-start">
             <h5 className="col-12 mb-0">Relocate: {username}</h5>
@@ -150,7 +153,7 @@ const RelocateClientForm: React.FC<UpdatePortModalProps> = ({port, id, dispatch,
             </div>
             
             </div>
-        </ModalWrapper>
+        </ManualModalWrapper>
     )
 }
 

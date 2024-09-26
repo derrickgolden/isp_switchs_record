@@ -15,14 +15,13 @@ router.get('/get-details/:sale_id', async(req: Request, res: Response) =>{
             res.status(302).json(response)
         
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(302).json({success: false, msg: "sever side error", err: error.message})
     }
 });
 
 router.post('/update', async(req: Request, res: Response) =>{
     const body = req.body;
-    console.log(body)
     try {
         const response:universalResponse = await upadateInvoiceDetails(body);
         response.success ? 
@@ -30,7 +29,7 @@ router.post('/update', async(req: Request, res: Response) =>{
             res.status(302).json(response)
         
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(302).json({success: false, msg: "sever side error", err: error.message})
     }
 });

@@ -21,13 +21,11 @@ router.post('/register-shop', async (req, res) => {
             res.status(302).json(response);
     }
     catch (error) {
-        console.log(error);
+        // console.log(error)
         res.status(302).json({ success: false, msg: "sever side error", err: error.message });
     }
 });
 router.get('/shop-details', async (req, res) => {
-    // const {added_by} = req.user;
-    console.log({ user: req.user });
     try {
         const response = await (0, shop_1.getShopListDetails)();
         response.success ?
@@ -35,7 +33,7 @@ router.get('/shop-details', async (req, res) => {
             res.status(302).json(response);
     }
     catch (error) {
-        console.log(error);
+        // console.log(error)
         res.status(302).json({ success: false, msg: "sever side error", err: error.message });
     }
 });

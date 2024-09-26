@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 import { BeatLoader } from "react-spinners"
 import { IoMdClose } from "react-icons/io";
 
-interface ModalWrapperProps{
+export interface ModalWrapperProps{
     title: string;
     targetId: string;
     btnDetails: {
@@ -21,7 +21,8 @@ const ModalWrapper: React.FC<ModalWrapperProps> = (props) => {
     const {targetId, title, btnDetails, isLoading, submitHandle, manualClickRef} = props;
 
     return(
-        <div ref={manualClickRef} className="modal fade" id={targetId} tabIndex={-1} aria-labelledby={`${targetId}Label`} aria-hidden="true">
+        <div ref={manualClickRef} className="modal fade" id={targetId} tabIndex={-1} 
+            aria-labelledby={`${targetId}Label`} aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content ">
                 <div className="modal-header">

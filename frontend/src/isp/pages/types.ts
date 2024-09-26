@@ -58,5 +58,5 @@ export interface ExtractedPortDetailsProps{
     description: string; 
     port_number: number; 
     switch_no: number
-    client_details: { house_no: string; phone: string; username: string; }; 
+    client_details: { client_id: number, house_no: string; phone: string; username: string; }; 
 }

@@ -11,7 +11,6 @@ import AddGroupForm from "../components/sites/boxes/AddBoxForm";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { getSwitchById } from "./calculations/getSwitchById";
-import ChangePassword from "../components/auth/ChangePassword";
 import { useNavigate } from "react-router-dom";
 import { getCurrentBox } from "../components/sharedComponents/mappingBoxes";
 

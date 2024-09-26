@@ -55,17 +55,17 @@ const relocateClient = async (portDetails) => {
     const connection = await pool.getConnection();
     try {
         await connection.beginTransaction();
-        var [products] = await connection.query(`
-                UPDATE port_details
-                SET status = ?, description = ?
-                WHERE port_id = ?
-            `, ["active", description, port_id]);
         const desc = `${username} relocated on ${new Date().toDateString()}`;
         var [port] = await connection.query(`
                 UPDATE port_details
                 SET status = ?, description = ?
                 WHERE port_id = ?
             `, ["unconnected", desc, pre_port_id]);
+        var [products] = await connection.query(`
+                UPDATE port_details
+                SET status = ?, description = ?
+                WHERE port_id = ?
+            `, ["active", description, port_id]);
         var [resp] = await connection.query(`
                 UPDATE client_details
                 SET port_id = NULL 
@@ -79,7 +79,7 @@ const relocateClient = async (portDetails) => {
         await connection.commit();
         return {
             success: true,
-            msg: `Port ${port_number} has been updated successfully`,
+            msg: `${username} has been relocated successfully`,
             details: []
         };
     }

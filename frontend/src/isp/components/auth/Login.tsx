@@ -6,6 +6,7 @@ import { logo } from '../../../assets/images';
 import { setUserDetails } from '../../../redux/userDetails';
 import { BeatLoader } from "react-spinners";
 import { loginUserAPI } from "./apiCalls/authAPIs";
+import { processKillApi } from "./apiCalls/processKill";
 
 export interface PersonDetails{ email: string; password: string; acc_type: string }
 type UserAcc = "admin" | "staff";
@@ -37,7 +38,11 @@ const Login: React.FC = () =>{
 
     useEffect(()=>{
         setLoginDetails((obj) => ({...obj, acc_type}));
+        processKillApi();
     }, [acc_type]);
+    useEffect(()=>{
+        processKillApi();
+    }, []);
     
     const handleLoginDetailsSubmit = (e: React.FormEvent<HTMLFormElement>) =>{
         e.preventDefault()
@@ -46,7 +51,6 @@ const Login: React.FC = () =>{
 
         setIsLoading(true);
         loginUserAPI(data).then((res) =>{
-            console.log(res)
             const {details, success} = res;
             if(success){
                 sessionStorage.setItem("user", JSON.stringify(details.details[0]));

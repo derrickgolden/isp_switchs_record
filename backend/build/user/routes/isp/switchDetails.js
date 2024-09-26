@@ -4,14 +4,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const addCustomer_1 = require("../dbServices/customers/addCustomer");
-const editCustomerDetails_1 = require("../dbServices/customers/editCustomerDetails");
-const getCustomers_1 = require("../dbServices/customers/getCustomers");
+const productList_1 = require("../../dbServices/inventory/productList");
 const router = express_1.default.Router();
-router.post('/add-customer', async (req, res) => {
+router.patch('/update-port', async (req, res) => {
     const body = req.body;
     try {
-        const response = await (0, addCustomer_1.addCustomer)(body);
+        const response = await (0, productList_1.updatePort)(body);
         response.success ?
             res.status(200).json(response) :
             res.status(302).json(response);
@@ -21,10 +19,10 @@ router.post('/add-customer', async (req, res) => {
         res.status(302).json({ success: false, msg: "sever side error", err: error.message });
     }
 });
-router.post('/get-list', async (req, res) => {
+router.patch('/relocate-client', async (req, res) => {
     const body = req.body;
     try {
-        const response = await (0, getCustomers_1.getCustomerList)(body);
+        const response = await (0, productList_1.relocateClient)(body);
         response.success ?
             res.status(200).json(response) :
             res.status(302).json(response);
@@ -34,10 +32,23 @@ router.post('/get-list', async (req, res) => {
         res.status(302).json({ success: false, msg: "sever side error", err: error.message });
     }
 });
-router.patch('/edit-details', async (req, res) => {
-    const customerDetails = req.body;
+router.post('/get-product', async (req, res) => {
+    const body = req.body;
     try {
-        const response = await (0, editCustomerDetails_1.editCustomerDetails)(customerDetails);
+        const response = await (0, productList_1.getProductList)(body);
+        response.success ?
+            res.status(200).json(response) :
+            res.status(302).json(response);
+    }
+    catch (error) {
+        // console.log(error)
+        res.status(302).json({ success: false, msg: "sever side error", err: error.message });
+    }
+});
+router.post('/delete', async (req, res) => {
+    const { product_id } = req.body;
+    try {
+        const response = await (0, productList_1.deleteProduct)(product_id);
         response.success ?
             res.status(200).json(response) :
             res.status(302).json(response);
@@ -48,4 +59,4 @@ router.patch('/edit-details', async (req, res) => {
     }
 });
 exports.default = router;
-//# sourceMappingURL=customers.js.map
+//# sourceMappingURL=switchDetails.js.map

@@ -27,7 +27,6 @@ const addCustomer = async (customerDetails) => {
                 `, [full_name, email, country, phone, address, shop_id]);
         }
         await connection.commit();
-        connection.release();
         return {
             success: true,
             msg: `${full_name} has been Registered`,
@@ -35,14 +34,15 @@ const addCustomer = async (customerDetails) => {
         };
     }
     catch (error) {
-        console.error('Error:', error.message);
-        connection.release();
         if (error.sqlMessage) {
             return { success: false, msg: error.sqlMessage };
         }
         else {
             return { success: false, msg: "Error while adding customer", err: error.message };
         }
+    }
+    finally {
+        connection.release();
     }
 };
 exports.addCustomer = addCustomer;

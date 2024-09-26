@@ -29,11 +29,11 @@ const sendEmail = async (email: string, link: string): Promise<SendEmailRes> => 
 
   try {
     const response: SentMessageInfo = await transporter.sendMail(mailOptions);
-    console.log('Email sent:');
+    // console.log('Email sent:');
 
     return ({success: true, msg: "", response})
   } catch (error) {
-    console.error('Error sending email:', error);
+    // console.error('Error sending email:', error);
     return({success: false, msg: error.message})
   }
 };

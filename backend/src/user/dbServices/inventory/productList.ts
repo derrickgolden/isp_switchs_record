@@ -71,19 +71,19 @@ export const relocateClient = async (portDetails: UpdatePortProps ): Promise<uni
 
         await connection.beginTransaction();
 
-            var [products]: [Product[]] = await connection.query(`
-                UPDATE port_details
-                SET status = ?, description = ?
-                WHERE port_id = ?
-            `, ["active", description, port_id]);
-
             const desc = `${username} relocated on ${new Date().toDateString()}`
             var [port]: [Product[]] = await connection.query(`
                 UPDATE port_details
                 SET status = ?, description = ?
                 WHERE port_id = ?
             `, ["unconnected", desc, pre_port_id]);
-            
+
+            var [products]: [Product[]] = await connection.query(`
+                UPDATE port_details
+                SET status = ?, description = ?
+                WHERE port_id = ?
+            `, ["active", description, port_id]);
+   
             var [ resp ] = await connection.query(`
                 UPDATE client_details
                 SET port_id = NULL 
@@ -100,7 +100,7 @@ export const relocateClient = async (portDetails: UpdatePortProps ): Promise<uni
 
         return {
             success: true,
-            msg: `Port ${port_number} has been updated successfully`,
+            msg: `${username} has been relocated successfully`,
             details: []
         };
     } catch (error) {

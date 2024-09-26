@@ -37,21 +37,19 @@ export const addCustomer = async (customerDetails: customerDataProps ): Promise<
 
         await connection.commit();
 
-        connection.release();
-
         return {
             success: true,
             msg: `${full_name} has been Registered`,
             details: []
         };
     } catch (error) {
-        console.error('Error:', error.message);
-        connection.release();
         if (error.sqlMessage) {
             return { success: false, msg: error.sqlMessage  };
         } else {
             return { success: false, msg: "Error while adding customer", err: error.message };
         }
+    } finally {
+        connection.release();
     }
 };
 

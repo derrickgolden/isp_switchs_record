@@ -5,9 +5,7 @@ import { getStockDetails, updateStockDetails } from '../dbServices/stock';
 const router = express.Router();
 
 router.post('/update', async(req: ModifiedReq, res: Response) =>{
-    const newStockDetails = req.body;
-    console.log(newStockDetails);
-    
+    const newStockDetails = req.body;    
     
     try {
         const response:universalResponse = await updateStockDetails(newStockDetails);
@@ -16,7 +14,7 @@ router.post('/update', async(req: ModifiedReq, res: Response) =>{
             res.status(200).json(response)
         
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(302).json({success: false, msg: "sever side error", err: error.message})
     }
 });
@@ -32,7 +30,7 @@ router.post('/stock-details', async(req: ModifiedReq, res: Response) =>{
             res.status(302).json(response)
         
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(302).json({success: false, msg: "sever side error", err: error.message})
     }
 });

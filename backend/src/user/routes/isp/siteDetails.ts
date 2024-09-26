@@ -1,7 +1,7 @@
 import express, {Request, Response} from 'express';
 import { 
     addBoxDetails,
-    addProductGroup, 
+    addSiteDetails, 
     addSwitchDetails, 
     getBoxDetails, 
     getSiteList, 
@@ -16,13 +16,13 @@ router.post('/add-site', async(req: Request, res: Response) =>{
     const token: string = req.header('Authorization');
 
     try {
-        const response:universalResponse = await addProductGroup({site_location, description, shop_id})
+        const response:universalResponse = await addSiteDetails({site_location, description, shop_id})
         response.success ? 
             res.status(200).json(response):
             res.status(302).json(response)
         
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(302).json({success: false, msg: "sever side error", err: error.message})
     }
 });
@@ -38,7 +38,7 @@ router.post('/add-box', async(req: Request, res: Response) =>{
             res.status(302).json(response)
         
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(302).json({success: false, msg: "sever side error", err: error.message})
     }
 });
@@ -53,7 +53,7 @@ router.post('/get-site', async(req: Request, res: Response) =>{
             res.status(302).json(response)
         
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(302).json({success: false, msg: "sever side error", err: error.message})
     }
 });
@@ -68,7 +68,7 @@ router.post('/box-details', async(req: Request, res: Response) =>{
             res.status(302).json(response)
         
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(302).json({success: false, msg: "sever side error", err: error.message})
     }
 });
@@ -83,7 +83,7 @@ router.post('/add-switch', async(req: Request, res: Response) =>{
             res.status(302).json(response)
         
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(302).json({success: false, msg: "sever side error", err: error.message})
     }
 });

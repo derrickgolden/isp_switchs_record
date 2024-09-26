@@ -31,7 +31,6 @@ const makeApiCall = async(url: string, method: string, data: string) =>{
     return await axios.request(config)
     .then((response) => {
         if(response.data.success){
-            console.log(response.data)
             return {success: true, details: response.data};
         }else{
             Swal.fire({

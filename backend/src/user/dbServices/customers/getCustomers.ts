@@ -15,21 +15,19 @@ export const getCustomerList = async ( details: GetProductListProps ): Promise<u
             WHERE shop_id = ?
             `, [shop_id]);
 
-        connection.release();
-
         return {
             success: true,
             msg: `Customer list`,
             details: res
         };
     } catch (error) {
-        console.error('Error:', error.message);
-        connection.release();
 
         if (error.sqlMessage) {
             return { success: false, msg: "Database Error", err: error.sqlMessage };
         } else {
             return { success: false, msg: "Database Error", err: error.message };
         }
+    } finally{
+        connection.release();
     }
 };

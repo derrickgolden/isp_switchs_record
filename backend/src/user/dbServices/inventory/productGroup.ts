@@ -4,19 +4,17 @@ import { BoxDetailsProps, productgroupDetails } from "user/types/productGroupTyp
 import { universalResponse } from "user/types/universalResponse";
 const { pool } = require("../../../mysqlSetup");
 
-export const addProductGroup = async (productgroupDetails: productgroupDetails ): Promise<universalResponse> => {
+export const addSiteDetails = async (productgroupDetails: productgroupDetails ): Promise<universalResponse> => {
 
     const {site_location, description, shop_id} = productgroupDetails;
     
     const connection: RowDataPacket = await pool.getConnection();
     try {
 
-            var [res] = await connection.query(`
-                INSERT INTO site_details (site_location, description, shop_id)
-                VALUES (?, ?, ?)
-            `, [site_location, description, shop_id]);
-
-        connection.release();
+        var [res] = await connection.query(`
+            INSERT INTO site_details (site_location, description, shop_id)
+            VALUES (?, ?, ?)
+        `, [site_location, description, shop_id]);
 
         return {
             success: true,
@@ -24,14 +22,14 @@ export const addProductGroup = async (productgroupDetails: productgroupDetails )
             details: []
         };
     } catch (error) {
-        console.error('Error:', error.message);
-        connection.release();
 
         if (error.sqlMessage) {
             return { success: false, msg: error.sqlMessage };
         } else {
             return { success: false, msg: error.message };
         }
+    } finally{
+        connection.release();
     }
 };
 
@@ -47,22 +45,20 @@ export const addBoxDetails = async (productgroupDetails: BoxDetailsProps ): Prom
                 VALUES (?, ?, ?, ?)
             `, [site_id, building_name, description, shop_id]);
 
-        connection.release();
-
         return {
             success: true,
             msg: `Box at ${building_name} is Registered`,
             details: []
         };
     } catch (error) {
-        console.error('Error:', error.message);
-        connection.release();
 
         if (error.sqlMessage) {
             return { success: false, msg: error.sqlMessage };
         } else {
             return { success: false, msg: error.message };
         }
+    } finally{
+        connection.release();
     }
 };
 
@@ -73,6 +69,18 @@ export const addSwitchDetails = async (productgroupDetails:  SwitchDetailsProps 
     const connection: RowDataPacket = await pool.getConnection();
         try {
             await connection.beginTransaction();
+
+            const [existingSwitch]: [RowDataPacket[]] = await connection.query(`
+                SELECT * FROM switch_details 
+                WHERE box_id = ? AND switch_no = ?
+            `, [box_id, switch_no]);
+    
+            if (existingSwitch.length > 0) {
+                return {
+                    success: false,
+                    msg: `Switch number ${switch_no} is already registered for this box.`,
+                };
+            }
 
             const [res] = await connection.query(`
             INSERT INTO switch_details(box_id, switch_no, total_ports, description)
@@ -89,8 +97,6 @@ export const addSwitchDetails = async (productgroupDetails:  SwitchDetailsProps 
         }
 
         await connection.commit();
-       
-        connection.release();
 
         return {
             err: false,
@@ -100,15 +106,15 @@ export const addSwitchDetails = async (productgroupDetails:  SwitchDetailsProps 
         };
 
     } catch (error) {
-        console.error('Error:', error.message);
-        connection.release();
 
         if (error.sqlMessage) {
             return { success: false, msg: error.sqlMessage };
         } else {
             return { success: false, msg: error.message };
         }
-    } 
+    } finally{
+        connection.release();
+    }
 };
 
 export const getSiteList = async ( shop_id: number): Promise<universalResponse> => {
@@ -119,22 +125,20 @@ export const getSiteList = async ( shop_id: number): Promise<universalResponse> 
             WHERE shop_id = ?
         `, [shop_id]);
 
-        connection.release();
-
         return {
             success: true,
             msg: `Site list`,
             details: res,
         };
     } catch (error) {
-        console.error('Error:', error.message);
-        connection.release();
 
         if (error.sqlMessage) {
             return { success: false, msg: "Database Error", err: error.sqlMessage };
         } else {
             return { success: false, msg: "Database Error", err: error.message };
         }
+    } finally{
+        connection.release();
     }
 };
 
@@ -200,8 +204,6 @@ export const getBoxDetails = async ( shop_id: number): Promise<universalResponse
         GROUP BY 
             bd.box_id, sd.site_id;
     `, [shop_id]);
-    
-        connection.release();
 
         return {
             success: true,
@@ -209,19 +211,18 @@ export const getBoxDetails = async ( shop_id: number): Promise<universalResponse
             details: res,
         };
     } catch (error) {
-        console.error('Error:', error.message);
-        connection.release();
-
         if (error.sqlMessage) {
             return { success: false, msg: "Database Error", err: error.sqlMessage };
         } else {
             return { success: false, msg: "Database Error", err: error.message };
         }
+    } finally{
+        connection.release();
     }
 };    
 
 module.exports = {
-    addProductGroup,
+    addSiteDetails,
     addBoxDetails,
     getSiteList,
     getBoxDetails,

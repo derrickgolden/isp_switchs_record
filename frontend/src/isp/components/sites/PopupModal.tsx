@@ -9,6 +9,7 @@ import { Status } from '../../../redux/groupList';
 import { BeatLoader } from 'react-spinners';
 import { updatePortApi } from './boxes/apiCalls/updateApiCalls';
 import { AnyAction, Dispatch } from '@reduxjs/toolkit';
+import { useNavigate } from 'react-router-dom';
 
 interface Add_data_modal_Props {
     select_data: ExtractedPortDetailsProps;
@@ -24,6 +25,8 @@ const Add_data_modal: React.FC<Add_data_modal_Props> = ({ select_data, open_upda
     const { description, port_id, port_number, status, switch_no, building_name, client_details } = select_data;
     const { house_no, phone, username } = client_details;
     // console.log(port);
+
+    const navigate = useNavigate();
   
     const [selectedValue, setSelectedValue] = useState(status);
     const [newDescription, setNewDescription] = useState(description || "");
@@ -64,7 +67,7 @@ const Add_data_modal: React.FC<Add_data_modal_Props> = ({ select_data, open_upda
             status: selectedValue, port_id: currentPortId, description: newDescription, port_number, clientDetails
         });
         setIsLoading(true);
-        updatePortApi(data).then((res) =>{
+        updatePortApi(data, navigate).then((res) =>{
             if(res.success){
                 handleClose()
                 dispatch(setCallApi(true));
@@ -159,6 +162,6 @@ const Add_data_modal: React.FC<Add_data_modal_Props> = ({ select_data, open_upda
 
         </>
     )
-}
+};
 
 export default Add_data_modal;

@@ -3,26 +3,27 @@ import { useEffect, useState } from "react";
 import { Product, PortListProps } from "./types";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import Update_stock_modal from "./PopupModal"
-import Edit_product_details from "./PopupModal"
+import Edit_product_details from "./PopupModal";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleInfo, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-import { MdBrowserUpdated } from "react-icons/md";
+import { MdBrowserUpdated, MdOutlineMoveUp } from "react-icons/md";
 import { BoxDetailsProps, setGroupList } from "../../../redux/groupList";
 import { ExtractedPortDetailsProps } from "../../pages/types";
 import { getBoxDetailsApi } from "./boxes/apiCalls/getApiCalls";
 import { useNavigate } from "react-router-dom";
 import { stateColors } from "./boxes/details";
+import RelocateClientForm from "../sharedComponents/RelocateClientForm";
 
-const PortList: React.FC<PortListProps> = ({onHandleActionDetails}) =>{
+const PortList: React.FC<PortListProps> = () =>{
     const [search, setSearch] = useState('client_name');
     const [searchType, setSearchType] = useState('client_name');
     const [selectPort, setSelectPort] = useState<ExtractedPortDetailsProps>()
 
     // open modal
-    const [open_update_modal, setOpen_update_modal] = useState({ render: true, modal_open: false })
-    const [open_edit_modal, setOpen_edit_modal] = useState({ render: true, modal_open: false })
+    const [open_update_modal, setOpen_update_modal] = useState({ render: true, modal_open: false });
+    const [open_edit_modal, setOpen_edit_modal] = useState({ render: true, modal_open: false });
+    const [openRelocateModal, setOpenRelocateModal] = useState({ render: true, open: false });
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -71,16 +72,18 @@ const PortList: React.FC<PortListProps> = ({onHandleActionDetails}) =>{
         {
             name: "Action",
             cell: (row: ExtractedPortDetailsProps) => <>
-                {/* <button onClick={() => onHandleActionDetails(row)} className=" btn btn-info btn-sm ms-1"  >
-                    <FontAwesomeIcon icon={faCircleInfo} />
-                </button> */}
                 {/* <button onClick={() => {handleUpdateStock(row)}} className=" btn btn-primary btn-sm ms-1"  
                 data-toggle="modal" data-target="#exampleModalCenter">
                     <MdBrowserUpdated  size={16}/>
                 </button> */}
                 <button onClick={() => {handleEditProduct(row)}} 
+                    className=" btn btn-info btn-sm ms-1"  >
+                        <FontAwesomeIcon icon={faPenToSquare} />
+                </button>
+                <button onClick={() => {handleRelocateClient(row)}}
+                    disabled={row.client_details.username? false: true} 
                     className=" btn btn-secondary btn-sm ms-1"  >
-                    <FontAwesomeIcon icon={faPenToSquare} />
+                        <MdOutlineMoveUp/>
                 </button>
             </>,
         },  
@@ -111,7 +114,11 @@ const PortList: React.FC<PortListProps> = ({onHandleActionDetails}) =>{
     const handleEditProduct = (row: ExtractedPortDetailsProps) =>{
         setOpen_edit_modal({ render: !open_update_modal.render, modal_open: true })
         setSelectPort(row);
-        // setCurrentPortId(row.port_id);
+    };
+
+    const handleRelocateClient = (row: ExtractedPortDetailsProps) =>{
+        setOpenRelocateModal({ render: !openRelocateModal.render, open: true })
+        setSelectPort(row);
     };
     
     return(
@@ -119,11 +126,17 @@ const PortList: React.FC<PortListProps> = ({onHandleActionDetails}) =>{
             {
                 selectPort && (
                     <>
-                    
-                    <Edit_product_details 
-                        select_data={selectPort} open_update_data_modal={open_edit_modal}
-                        dispatch={dispatch}
-                    />
+                        <Edit_product_details 
+                            select_data={selectPort} 
+                            open_update_data_modal={open_edit_modal}
+                            dispatch={dispatch}
+                        />
+                        <RelocateClientForm
+                            port= {selectPort} 
+                            dispatch = {dispatch} 
+                            openModal = {openRelocateModal}
+                            setOpenRelocateModal ={setOpenRelocateModal}
+                        />
                     </>
                 )
             }
@@ -153,16 +166,6 @@ const PortList: React.FC<PortListProps> = ({onHandleActionDetails}) =>{
                     </div>
                 </div>
             </div>
-            {/* {
-                selectPort &&
-                <UpdatePortModal 
-                    port={selectPort}
-                    id={selectPort?.port_id}
-                    dispatch={dispatch}
-                    currentPortId={currentPortId}
-                    setCurrentPortId={setCurrentPortId}
-                />
-            } */}
         </div>
     )
 }
@@ -185,7 +188,8 @@ function extractPortsWithIds(boxDetails: BoxDetailsProps[]) {
                             switch_id,
                             box_id,
                             building_name,
-                            switch_no,    
+                            switch_no,
+                                
                         });
                     });
                 }

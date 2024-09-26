@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { FaRegEdit } from "react-icons/fa";
 import { MdOutlineMoveUp } from "react-icons/md";
 import { useState, Dispatch, useRef } from "react";
@@ -6,8 +5,7 @@ import { PortTypes } from "../../../../redux/groupList";
 import { AnyAction } from "@reduxjs/toolkit";
 import { customCardStyle } from "./details";
 import UpdatePortModal from "../../sharedComponents/UpdatePortModal";
-import RelocateClientForm from "../../sharedComponents/RelocateClientModal";
-import { Modal } from "bootstrap";
+import RelocateClientForm from "../../sharedComponents/RelocateClientForm";
 
 interface PortCardProps {
   id: number;
@@ -16,23 +14,17 @@ interface PortCardProps {
   dispatch: Dispatch<AnyAction>;
 }
 
-// trueHost@123456!
 const PortCard: React.FC<PortCardProps> = ({id, port, refs, dispatch }) => {
-  const relocateModalRef = useRef<HTMLDivElement | null>(null);
 
   const { description, port_id, port_number, status, client_details } = port;
   const { house_no, phone, username, client_id } = client_details;
+  const [openRelocateModal, setOpenRelocateModal] = useState({ render: true, open: false });
 
   const [currentPortId, setCurrentPortId] = useState(port_id);
 
-  const handleRelocateClick = (port_id: number) =>{
-    setCurrentPortId(port_id);
-    // if (relocateModalRef.current) {
-    //   const relocateModal = new Modal(relocateModalRef.current);
-    //   relocateModal.show();
-    // }
-  }
-  // console.log(currentPortId);
+  const handleRelocateClient = () =>{
+    setOpenRelocateModal({ render: !openRelocateModal.render, open: true })
+  };
 
   return (
     <div
@@ -76,10 +68,9 @@ const PortCard: React.FC<PortCardProps> = ({id, port, refs, dispatch }) => {
       <div 
         className={`bg-white d-flex justify-content-between align-items-center card-footer rounded-bottom `}
       >
-        <button disabled={client_id? false: true} data-bs-toggle="modal"
-          data-bs-target={`#modalRelocate${port_id}`}
-          className="btn py-0 border-0 text-poppins-regular text-danger-emphasis"
-            onClick={() => handleRelocateClick(port_id)}>
+        <button disabled={client_id? false: true} 
+          onClick={() => {handleRelocateClient()}}
+          className="btn py-0 border-0 text-poppins-regular text-danger-emphasis">
             Relocate <MdOutlineMoveUp />
         </button>
         <span data-bs-toggle="modal"
@@ -97,14 +88,12 @@ const PortCard: React.FC<PortCardProps> = ({id, port, refs, dispatch }) => {
         currentPortId = {currentPortId} 
         setCurrentPortId = {setCurrentPortId}
       />  
-      <RelocateClientForm 
-        port={port}
-        id={id}
-        dispatch={dispatch}
-        currentPortId = {currentPortId} 
-        setCurrentPortId = {setCurrentPortId}
-        relocateModalRef={relocateModalRef}
-      />  
+       <RelocateClientForm
+          port= {port} 
+          dispatch = {dispatch} 
+          openModal = {openRelocateModal}
+          setOpenRelocateModal ={setOpenRelocateModal}
+        />
     </div>
   );
 };

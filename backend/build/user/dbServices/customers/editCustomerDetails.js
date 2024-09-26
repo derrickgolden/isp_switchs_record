@@ -11,7 +11,6 @@ const editCustomerDetails = async (customerDetails) => {
             SET full_name = ?, email = ?, address = ?
             WHERE shop_id = ? AND customer_id = ?;
         `, [full_name, email, address, shop_id, customer_id]);
-        connection.release();
         return {
             success: true,
             msg: `Customer details updated`,
@@ -19,14 +18,15 @@ const editCustomerDetails = async (customerDetails) => {
         };
     }
     catch (error) {
-        console.error('Error:', error.message);
-        connection.release();
         if (error.sqlMessage) {
             return { success: false, msg: "Database Error", err: error.sqlMessage };
         }
         else {
             return { success: false, msg: "Sorry, an error occured", err: error.message };
         }
+    }
+    finally {
+        connection.release();
     }
 };
 exports.editCustomerDetails = editCustomerDetails;

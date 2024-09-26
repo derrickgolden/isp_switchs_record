@@ -1,16 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBoxDetails = exports.getSiteList = exports.addSwitchDetails = exports.addBoxDetails = exports.addProductGroup = void 0;
+exports.getBoxDetails = exports.getSiteList = exports.addSwitchDetails = exports.addBoxDetails = exports.addSiteDetails = void 0;
 const { pool } = require("../../../mysqlSetup");
-const addProductGroup = async (productgroupDetails) => {
+const addSiteDetails = async (productgroupDetails) => {
     const { site_location, description, shop_id } = productgroupDetails;
     const connection = await pool.getConnection();
     try {
         var [res] = await connection.query(`
-                INSERT INTO site_details (site_location, description, shop_id)
-                VALUES (?, ?, ?)
-            `, [site_location, description, shop_id]);
-        connection.release();
+            INSERT INTO site_details (site_location, description, shop_id)
+            VALUES (?, ?, ?)
+        `, [site_location, description, shop_id]);
         return {
             success: true,
             msg: `Site Loacation at ${site_location} Registered`,
@@ -18,8 +17,6 @@ const addProductGroup = async (productgroupDetails) => {
         };
     }
     catch (error) {
-        console.error('Error:', error.message);
-        connection.release();
         if (error.sqlMessage) {
             return { success: false, msg: error.sqlMessage };
         }
@@ -27,8 +24,11 @@ const addProductGroup = async (productgroupDetails) => {
             return { success: false, msg: error.message };
         }
     }
+    finally {
+        connection.release();
+    }
 };
-exports.addProductGroup = addProductGroup;
+exports.addSiteDetails = addSiteDetails;
 const addBoxDetails = async (productgroupDetails) => {
     const { site_id, building_name, description, shop_id } = productgroupDetails;
     const connection = await pool.getConnection();
@@ -37,7 +37,6 @@ const addBoxDetails = async (productgroupDetails) => {
                 INSERT INTO box_details (site_id, building_name, description, shop_id)
                 VALUES (?, ?, ?, ?)
             `, [site_id, building_name, description, shop_id]);
-        connection.release();
         return {
             success: true,
             msg: `Box at ${building_name} is Registered`,
@@ -45,14 +44,15 @@ const addBoxDetails = async (productgroupDetails) => {
         };
     }
     catch (error) {
-        console.error('Error:', error.message);
-        connection.release();
         if (error.sqlMessage) {
             return { success: false, msg: error.sqlMessage };
         }
         else {
             return { success: false, msg: error.message };
         }
+    }
+    finally {
+        connection.release();
     }
 };
 exports.addBoxDetails = addBoxDetails;
@@ -61,6 +61,16 @@ const addSwitchDetails = async (productgroupDetails) => {
     const connection = await pool.getConnection();
     try {
         await connection.beginTransaction();
+        const [existingSwitch] = await connection.query(`
+                SELECT * FROM switch_details 
+                WHERE box_id = ? AND switch_no = ?
+            `, [box_id, switch_no]);
+        if (existingSwitch.length > 0) {
+            return {
+                success: false,
+                msg: `Switch number ${switch_no} is already registered for this box.`,
+            };
+        }
         const [res] = await connection.query(`
             INSERT INTO switch_details(box_id, switch_no, total_ports, description)
             VALUES (?, ?, ?, ?)
@@ -73,7 +83,6 @@ const addSwitchDetails = async (productgroupDetails) => {
             `, [insert_id, i]); // Assuming initial status is 'inactive' and description is empty
         }
         await connection.commit();
-        connection.release();
         return {
             err: false,
             success: true,
@@ -82,14 +91,15 @@ const addSwitchDetails = async (productgroupDetails) => {
         };
     }
     catch (error) {
-        console.error('Error:', error.message);
-        connection.release();
         if (error.sqlMessage) {
             return { success: false, msg: error.sqlMessage };
         }
         else {
             return { success: false, msg: error.message };
         }
+    }
+    finally {
+        connection.release();
     }
 };
 exports.addSwitchDetails = addSwitchDetails;
@@ -100,7 +110,6 @@ const getSiteList = async (shop_id) => {
             SELECT * FROM site_details 
             WHERE shop_id = ?
         `, [shop_id]);
-        connection.release();
         return {
             success: true,
             msg: `Site list`,
@@ -108,14 +117,15 @@ const getSiteList = async (shop_id) => {
         };
     }
     catch (error) {
-        console.error('Error:', error.message);
-        connection.release();
         if (error.sqlMessage) {
             return { success: false, msg: "Database Error", err: error.sqlMessage };
         }
         else {
             return { success: false, msg: "Database Error", err: error.message };
         }
+    }
+    finally {
+        connection.release();
     }
 };
 exports.getSiteList = getSiteList;
@@ -180,7 +190,6 @@ const getBoxDetails = async (shop_id) => {
         GROUP BY 
             bd.box_id, sd.site_id;
     `, [shop_id]);
-        connection.release();
         return {
             success: true,
             msg: `Site list`,
@@ -188,8 +197,6 @@ const getBoxDetails = async (shop_id) => {
         };
     }
     catch (error) {
-        console.error('Error:', error.message);
-        connection.release();
         if (error.sqlMessage) {
             return { success: false, msg: "Database Error", err: error.sqlMessage };
         }
@@ -197,10 +204,13 @@ const getBoxDetails = async (shop_id) => {
             return { success: false, msg: "Database Error", err: error.message };
         }
     }
+    finally {
+        connection.release();
+    }
 };
 exports.getBoxDetails = getBoxDetails;
 module.exports = {
-    addProductGroup: exports.addProductGroup,
+    addSiteDetails: exports.addSiteDetails,
     addBoxDetails: exports.addBoxDetails,
     getSiteList: exports.getSiteList,
     getBoxDetails: exports.getBoxDetails,

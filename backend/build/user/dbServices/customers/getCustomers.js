@@ -10,7 +10,6 @@ const getCustomerList = async (details) => {
             SELECT * FROM customer_list
             WHERE shop_id = ?
             `, [shop_id]);
-        connection.release();
         return {
             success: true,
             msg: `Customer list`,
@@ -18,14 +17,15 @@ const getCustomerList = async (details) => {
         };
     }
     catch (error) {
-        console.error('Error:', error.message);
-        connection.release();
         if (error.sqlMessage) {
             return { success: false, msg: "Database Error", err: error.sqlMessage };
         }
         else {
             return { success: false, msg: "Database Error", err: error.message };
         }
+    }
+    finally {
+        connection.release();
     }
 };
 exports.getCustomerList = getCustomerList;

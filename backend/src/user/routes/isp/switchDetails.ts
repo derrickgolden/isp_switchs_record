@@ -14,7 +14,7 @@ router.patch('/update-port', async(req: Request, res: Response) =>{
             res.status(302).json(response);
         
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(302).json({success: false, msg: "sever side error", err: error.message})
     }
 });
@@ -29,7 +29,7 @@ router.patch('/relocate-client', async(req: Request, res: Response) =>{
             res.status(302).json(response);
         
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(302).json({success: false, msg: "sever side error", err: error.message})
     }
 });
@@ -44,7 +44,7 @@ router.post('/get-product', async(req: Request, res: Response) =>{
             res.status(302).json(response);
         
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(302).json({success: false, msg: "sever side error", err: error.message})
     }
 });
@@ -59,7 +59,7 @@ router.post('/delete', async(req: Request, res: Response) =>{
             res.status(302).json(response)
         
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         res.status(302).json({success: false, msg: "sever side error", err: error.message})
     }
 });

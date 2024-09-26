@@ -57,7 +57,6 @@ router.post('/login', async (req, res) => {
         }
         const match = await bcrypt.compare(password, passwordHash);
         if (match) {
-            console.log(token);
             res.status(200).send({ success: true, token, msg: "User Found", details });
         }
         else {
@@ -65,7 +64,7 @@ router.post('/login', async (req, res) => {
         }
     }
     catch (error) {
-        console.log(error);
+        // console.log(error)
         res.status(404).send({ success: false, msg: error.message });
     }
 });
@@ -89,7 +88,7 @@ router.patch('/change-pass', authenticateToken_1.authenticateToken, async (req, 
         }
     }
     catch (error) {
-        console.log(error);
+        // console.log(error)
         res.status(404).send({ success: false, err: error.message, msg: "Server side error" });
     }
 });
@@ -110,7 +109,8 @@ router.patch('/reset-password', async (req, res) => {
         }
     }
     catch (error) {
-        console.log(error);
+        // console.log(error)
+        res.status(404).send({ success: false, msg: "Unable to change Password" });
     }
 });
 router.post('/forgot-password', async (req, res) => {
@@ -132,7 +132,7 @@ router.post('/forgot-password', async (req, res) => {
         res.status(400).send(response);
     }
     catch (error) {
-        console.log(error);
+        // console.log(error)
         res.status(400).send({ success: false, msg: "serverside error", error: error.message });
     }
 });

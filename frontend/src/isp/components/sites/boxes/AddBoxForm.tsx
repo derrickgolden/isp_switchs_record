@@ -14,6 +14,7 @@ interface AddGroupFormProps{
 }
 const AddGroupForm: React.FC<AddGroupFormProps> = ({ setShowDetails}) =>{
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     
     const [isLoading, setIsLoading] = useState(false);
     const [siteList, setSiteList] = useState<SiteListProps[]>([]);
@@ -31,7 +32,7 @@ const AddGroupForm: React.FC<AddGroupFormProps> = ({ setShowDetails}) =>{
             setGroupDetails((obj) =>({...obj, shop_id}));
 
             const data = JSON.stringify({shop_id});
-            getSiteDetailsApi(data).then((res) =>{
+            getSiteDetailsApi(data, navigate).then((res) =>{
                 if(res.success){
                     setSiteList(res.details);
                 }
@@ -57,7 +58,7 @@ const AddGroupForm: React.FC<AddGroupFormProps> = ({ setShowDetails}) =>{
             setIsLoading(true);
             const data = JSON.stringify(groupDetails);
 
-            addBoxApi(data).then((res) =>{
+            addBoxApi(data, navigate).then((res) =>{
                 if(res.success){
                     setShowDetails("list");
                     dispatch(setCallApi(true));
